@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@loupeteam/starterasproject49": "^0.1.0"
+    "@loupeteam/starterasproject49": "^0.1.0",
+    "@loupeteam/webhmiprog": "^0.1.0"
   },
   "lpmConfig": {
     "deploymentConfigs": [],
