@@ -1,19 +1,34 @@
 {
-  "name": "hmi",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "@loupeteam/starterhmiproject",
+  "version": "1.0.1",
+  "description": "A template to bootstrap client UI development based on webHMI",
+  "main": "ElectronApp.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "startLoupeJSServer": "node ./node_modules/@loupeteam/dev-server/index.js",
+    "startPlcSimServer": "node ./node_modules/@loupeteam/plc-sim/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loupeteam/StarterHmiProject.git"
+  },
   "dependencies": {
-    "bootstrap": "3.3.4",
-    "@loupeteam/tmplits": "*",
-    "@loupeteam/tmplit-basic": "*",
-    "@loupeteam/webhmi" : "file:../../src/HMI",
-    "app" : "file:./"
+    "@electron/remote": "^2.0.8",
+    "ftp": "^0.3.10",
+    "ftp-client": "^0.2.2"
+  },
+  "devDependencies": {
+    "devtron": "^1.4.0",
+    "electron": "^21.0.1",
+    "electron-packager": "^16.0.0",
+    "electron-rebuild": "^3.2.9",
+    "@loupeteam/dev-server": "*",
+    "@loupeteam/plc-sim": "*"
+  },
+  "license": "SEE LICENSE.txt",
+  "author": "Ryan Jones",
+  "homepage": "http://Loupe.team/",
+  "lpm": {
+    "type": "hmi-project"
   }
 }
