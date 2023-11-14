@@ -1,29 +1,37 @@
-To start a new hmi using the widget system
-
+Install your local application by adding to the package.json at this level:
 ```
-lpm init
-lpm install widget-template
+    "app":"file:./"
 ```
 
-If you want to install the local gizmo by file add the directory:
+If this repo is for developing a tmplit also add:   
 ```
-"@loupeteam/widgets-[mygizmo]": "file:../../src/hmi"
+    "@loupeteam/tmplits-[mytmplit]":"file:../../src/hmi"
 ```
-Run npm install
 
+Your package json will be something like this:
 ```
-//Example local file module depencency
 {
-  "name": "hmi",
-  "version": "1.0.0",
-   ...
+  "name": "myhmi",
+  "version": "0.0.1",
+  "description": "User HMI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loupeteam/userrepo.git"
+  },
   "dependencies": {
-    "@loupeteam/widgets-mygizmo": "file:../../src/hmi"
-  }
+    "app":"file:./",
+    "@loupeteam/tmplits-[mytmplit]":"file:../../src/HMI"
+  },
 }
 ```
 
-If you want to install widgets from a package run lpm install
+
+After these are added:
 ```
-lpm install widgets-[mygizmo]
+npm install
 ```
+
