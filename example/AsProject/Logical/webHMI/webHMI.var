@@ -1,4 +1,0 @@
-VAR
-	gWSTimeout : BOOL;
-	jsonWebSocketServer_0 : jsonWebSocketServer;
-END_VAR
