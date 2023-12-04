@@ -13,6 +13,7 @@
     "@loupeteam/tmplit-basic": "*",
     "@loupeteam/tmplits-dropdown": "*",
     "@loupeteam/webhmi": "*",
+    "@loupeteam/tmplits-login": "file:../../../src/HMI/tmplits-login/",
     "androidjs": "^2.0.6",
     "app": "file:./",
     "bootstrap": "^3.3.4",
