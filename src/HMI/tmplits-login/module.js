@@ -13,6 +13,27 @@ import * as util from "../tmplits-utilities/module.js"
 
 export function TmplitLogin(context, args) {
 
-    return `Hello ${context[0]}!`
+    return `
+        <button class="btn btn-primary" data-toggle="modal" data-target=".login-modal">Login</button>
+
+        <div class="modal fade login-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Login</h4>
+            </div>
+            <div class="modal-body">
+                <p>Creds...</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Submit</button>
+            </div>
+            </div>
+        </div>
+        </div>
+    `
+
     
 }
