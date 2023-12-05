@@ -6,6 +6,7 @@
     <Object Type="Package" Description="Global libraries">Libraries</Object>
     <Object Type="Package">Infrastructure</Object>
     <Object Type="Package">Diagnostics</Object>
+    <Object Type="Package">MachineControl</Object>
     <Object Type="Package">webHMI</Object>
   </Objects>
 </Package>

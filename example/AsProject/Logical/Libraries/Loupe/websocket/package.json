@@ -2,11 +2,11 @@
   "name": "@loupeteam/websocket",
   "version": "0.2.0",
   "description": "Loupe's websocket library for Automation Runtime",
-  "homepage": "https://loupeteam.github.io/Sandbox/libraries/websocket.html",
+  "homepage": "https://loupeteam.github.io/LoupeDocs/libraries/websocket.html",
   "scripts": {},
   "keywords": [],
   "author": "Loupe",
-  "license": "Loupe Software License Agreement",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/loupeteam/websocket"

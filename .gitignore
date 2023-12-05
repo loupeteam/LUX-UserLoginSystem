@@ -1,12 +1,6 @@
 # Backup projects
 /ASProjects/Backups
 
-# Build directories
-# **/Build/
-# **/ElectronBuild/
-# **/Output/
-# /Installer/Output/*.exe
-
 # AS temporary directories
 Binaries/
 Diagnosis/
@@ -26,7 +20,7 @@ ignored/
 # Auto-generated safety file
 **/BusNavigator.xostd
 
-# File types
+# AS File types
 *.bak
 *.isopen
 *.DS_Store

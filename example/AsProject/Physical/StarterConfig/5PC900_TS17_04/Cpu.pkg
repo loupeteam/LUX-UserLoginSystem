@@ -19,7 +19,7 @@
   </Objects>
   <Configuration ModuleId="5PC900.TS17-04">
     <AutomationRuntime Version="C4.90" />
-    <Build GccVersion="6.3.0" PreBuildStep="" />
+    <Build GccVersion="6.3.0" PreBuildStep="&quot;$(AS_PROJECT_PATH)\Logical\Infrastructure\RevInfo\getRevInfo.sh&quot;" />
     <DefaultTargetMemory Tasks="UserROM" />
     <Transfer SavedOfflineInstallationFolder="" SavedPipDestinationFolder="" SavedRuntimeUtilityCenterPackagePath="" />
     <Vc FirmwareVersion="V4.72.0" />
