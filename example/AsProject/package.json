@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@loupeteam/firstinitprog": "^0.1.1",
+    "@loupeteam/msgboxerr": "^0.0.1",
     "@loupeteam/piperprog": "^0.1.0",
     "@loupeteam/revinfoprog": "^2.2.0",
     "@loupeteam/starterasproject49": "^0.1.0",

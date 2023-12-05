@@ -1,0 +1,23 @@
+(********************************************************************
+ * COPYRIGHT --  
+ ********************************************************************
+ * Program: MsgBox
+ * File: MsgBox.var
+ * Author: Josh
+ * Created: July 23, 2013
+ ********************************************************************
+ * Local variables of program MsgBox
+ ********************************************************************)
+VAR
+	AddMsg : BOOL;
+	OK : BOOL;
+	Cancel : BOOL;
+	MessageBox : MessageBox_HMI_typ;
+	MyPrompt : STRING[80];
+	AddHigh : BOOL;
+	TON_1 : TON;
+	MessageID : UDINT;
+	removeBox : BOOL;
+	InputString : STRING[80];
+	DemoMsgBoxAck : MsgBoxAck := (0);
+END_VAR
