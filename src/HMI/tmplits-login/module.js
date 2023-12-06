@@ -11,29 +11,58 @@
 //Define your tmplit functions here and export them to make them globally available
 import * as util from "../tmplits-utilities/module.js"
 
+// //---------------------------------------------
+// // User level (taken form @loupeteam/webhmi/webhmi.js)
+// //---------------------------------------------
+
+// var userLevelPV;
+// var currentUserLevel = 0;
+
+// function setUserLevel(level) {
+//     currentUserLevel = level;
+// }
+
+// function setUserLevelPV(levelPV) {
+//     if (levelPV !== undefined) { // Don't set PV to something that doesn't exist; that's what clearUserLevelPV is for
+//         userLevelPV = levelPV;
+//         initCyclicRead(levelPV);
+//     }
+// }
+
+// function clearUserLevelPV() {
+//     userLevelPV = undefined;
+// }
+
+// export function getUserLevel() {
+//     // return thisMachine.value(userLevelPV);
+//     console.log("1000");
+// }
+
+
+// document.getElementById("loginForm").onsubmit = function getUserLevel() {
+//     if (userLevelPV === undefined) {
+//         // Not using PV; use internal value instead
+//         return currentUserLevel;
+//     }
+//     // return thisMachine.value(userLevelPV);
+//     console.log("1000");
+// };
+
+
 export function TmplitLogin(context, args) {
 
-    return `
-        <button class="btn btn-primary" data-toggle="modal" data-target=".login-modal">Login</button>
+    // Get Current Login Level PV
+    var userLevelPV;
+    var currentUserLevel = 0;
 
-        <div class="modal fade login-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Login</h4>
-            </div>
-            <div class="modal-body">
-                <p>Creds...</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Submit</button>
-            </div>
-            </div>
-        </div>
-        </div>
-    `
+    function getUserLevel() {
+        // return thisMachine.value(userLevelPV);
+        console.log("1000");
+    }
+    
+    console.log("in the module function")
+    
+    return `    `
 
     
 }
