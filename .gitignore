@@ -38,6 +38,7 @@ ignored/
 **/MPLogs/*
 **/DLFiles/*
 **/node_modules/
+*.vscode
 
 # External Hardware
 *.ext
