@@ -1,0 +1,9 @@
+
+TYPE
+	LOGIN_LEVEL : 
+		(
+		LOGGED_OUT,
+		USER,
+		ADMIN
+	);
+END_TYPE
