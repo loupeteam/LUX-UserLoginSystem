@@ -11,44 +11,6 @@
 //Define your tmplit functions here and export them to make them globally available
 import * as util from "../tmplits-utilities/module.js"
 
-// //---------------------------------------------
-// // User level (taken form @loupeteam/webhmi/webhmi.js)
-// //---------------------------------------------
-
-// var userLevelPV;
-// var currentUserLevel = 0;
-
-// function setUserLevel(level) {
-//     currentUserLevel = level;
-// }
-
-// function setUserLevelPV(levelPV) {
-//     if (levelPV !== undefined) { // Don't set PV to something that doesn't exist; that's what clearUserLevelPV is for
-//         userLevelPV = levelPV;
-//         initCyclicRead(levelPV);
-//     }
-// }
-
-// function clearUserLevelPV() {
-//     userLevelPV = undefined;
-// }
-
-// export function getUserLevel() {
-//     // return thisMachine.value(userLevelPV);
-//     console.log("1000");
-// }
-
-
-// document.getElementById("loginForm").onsubmit = function getUserLevel() {
-//     if (userLevelPV === undefined) {
-//         // Not using PV; use internal value instead
-//         return currentUserLevel;
-//     }
-//     // return thisMachine.value(userLevelPV);
-//     console.log("1000");
-// };
-
-
 export function TmplitLogin(context, args) {
 
     // Get Current Login Level PV
