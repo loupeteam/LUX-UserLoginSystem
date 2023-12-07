@@ -157,6 +157,7 @@ machine.initCyclicRead("gMachine.IN.CMD");
 machine.initCyclicRead("gMachine.OUT.State");
 machine.initCyclicRead("gMotorBasic");
 machine.initCyclicRead("AxisBasic:Configuration");
+machine.initCyclicRead("LoginLvl:loginLevel");
 
 var updateMachineErrors = function () {
   if (

@@ -13,18 +13,16 @@ import * as util from "../tmplits-utilities/module.js"
 
 export function TmplitLogin(context, args) {
 
-    // Get Current Login Level PV
-    var userLevelPV;
-    var currentUserLevel = 0;
+    // Get Current HMI number (for use as index in login array, could be passed in as an arg?)
+    machine.writeVariable("LoginLvl:requestedHmi", 1)
 
-    function getUserLevel() {
-        // return thisMachine.value(userLevelPV);
-        console.log("1000");
-    }
-    
-    console.log("in the module function")
-    
-    return `    `
+    machine.writeVariable("LoginLvl:loginAttempt", 1) // Set loginAttempt to TRUE
+    machine.writeVariable("LoginLvl:incomingUser", context[0]) // Send Username input
+    machine.writeVariable("LoginLvl:incomingPass", context[1])  // Sent Password input
 
-    
+    machine.readVariable("LoginLvl:loginLevel") // Receive Login Level
+
+    console.log("Machine.LoginLevel: ", machine.value("LoginLvl:loginLevel")) 
+
+    return 
 }

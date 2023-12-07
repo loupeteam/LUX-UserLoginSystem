@@ -26,7 +26,7 @@
                 <!-- Modal Body -->
                 <div class="modal-body">
                     
-                    <form role="form" id="loginForm" onsubmit="TmplitLogin()">
+                    <form role="form" id="loginForm" onsubmit="TmplitLogin([document.getElementById('loginUser').value, document.getElementById('loginPass').value])">
                       <div class="form-group">
                         <label for="loginUser">Username</label>
                         <input type="text" class="form-control" id="loginUser" placeholder="Username"/>
