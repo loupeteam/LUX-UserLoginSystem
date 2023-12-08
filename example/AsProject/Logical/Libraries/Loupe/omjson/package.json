@@ -1,6 +1,6 @@
 {
   "name": "@loupeteam/omjson",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Loupe's omjson library for Automation Runtime",
   "homepage": "https://loupeteam.github.io/LoupeDocs/libraries/omjson.html",
   "scripts": {},

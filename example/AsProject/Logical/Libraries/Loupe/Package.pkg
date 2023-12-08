@@ -3,6 +3,8 @@
   <Objects>
     <Object Type="Library" Language="Binary">piper</Object>
     <Object Type="Library" Language="Binary">omjson</Object>
+    <Object Type="Library" Language="Binary">vartools</Object>
+    <Object Type="Library" Language="Binary">stringext</Object>
     <Object Type="Library" Language="Binary">databuffer</Object>
     <Object Type="Library" Language="Binary">tcpcomm</Object>
     <Object Type="Library" Language="Binary">websocket</Object>
@@ -11,9 +13,7 @@
     <Object Type="Library" Language="Binary">fiowrap</Object>
     <Object Type="Library" Language="Binary">hmitools</Object>
     <Object Type="Library" Language="Binary">ringbuflib</Object>
-    <Object Type="Library" Language="Binary">errorlib</Object>
-    <Object Type="Library" Language="Binary">vartools</Object>
     <Object Type="Library" Language="Binary">logthat</Object>
-    <Object Type="Library" Language="Binary">stringext</Object>
+    <Object Type="Library" Language="Binary">errorlib</Object>
   </Objects>
 </Package>

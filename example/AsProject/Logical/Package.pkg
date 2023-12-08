@@ -7,6 +7,6 @@
     <Object Type="Package">Infrastructure</Object>
     <Object Type="Package">Diagnostics</Object>
     <Object Type="Package">MachineControl</Object>
-    <Object Type="Package">webHMI</Object>
+    <Object Type="Package">Lux</Object>
   </Objects>
 </Package>

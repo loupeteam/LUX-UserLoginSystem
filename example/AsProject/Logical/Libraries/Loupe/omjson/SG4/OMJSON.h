@@ -1,6 +1,6 @@
 /* Automation Studio generated header file */
 /* Do not edit ! */
-/* OMJSON 1.04.0 */
+/* OMJSON 1.04.1 */
 
 #ifndef _OMJSON_
 #define _OMJSON_
@@ -9,7 +9,7 @@ extern "C"
 {
 #endif
 #ifndef _OMJSON_VERSION
-#define _OMJSON_VERSION 1.04.0
+#define _OMJSON_VERSION 1.04.1
 #endif
 
 #include <bur/plctypes.h>
