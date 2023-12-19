@@ -19,8 +19,43 @@ function DefaultLogin(evt) { // TODO: Maybe named something more cryptic
     console.log("User: ", loginUser.value)
     let loginPass = scope.querySelector('.lui-loginPass')
     console.log("Password: ", loginPass.value)
+ 
 
 }
+
+
+// When DOM is loaded this  
+// function will get executed 
+$(() => { 
+    // function will get executed  
+    // on click of submit button 
+    $("#submitButton").click(function(ev) { 
+        // var form = $("#formID"); 
+        // var url = form.attr('action'); 
+
+        
+        console.log("Password: ")
+        // TODO: Onclick call teh DefaultLOgin funtion with the event arg
+        // then do the ajax stuff inside that function.
+
+
+        // $.ajax({ 
+        //     type: "GET", 
+        //     url: '127.0.0.1/getUserLvl', 
+        //     data: form.serialize(), 
+        //     success: function(data) { 
+                  
+        //         // Ajax call completed successfully 
+        //         alert("Form Submited Successfully"); 
+        //     }, 
+        //     error: function(data) { 
+                  
+        //         // Some error in ajax call 
+        //         alert("some Error"); 
+        //     } 
+        // }); 
+    }); 
+}); 
 
 export function TmplitLogin(context, args) {
 
@@ -73,7 +108,7 @@ export function TmplitLogin(context, args) {
                 <!-- Modal Body -->
                 <div class="modal-body">
                     
-                    <form role="form" method="GET" action="">
+                    <form role="form" id="formID" action=''>
                       <div class="form-group">
                         <label for="loginUser">Username</label>
                         <input type="text" class="form-control lui-loginUser" placeholder="Username"/>
@@ -82,7 +117,7 @@ export function TmplitLogin(context, args) {
                         <label for="loginPass">Password</label>
                           <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
                       </div>
-                      <button type="submit" class="btn btn-default">Submit</button>
+                      <button type="submit" id="submitButton" class="btn btn-default">Submit</button>
                     </form>
                     
                 </div>
