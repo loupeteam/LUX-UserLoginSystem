@@ -1,20 +1,16 @@
 {
-  "name": "hmi",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "CustomHMI",
+  "version": "0.0.1",
+  "description": "Template tmplit based project",
+  "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@loupeteam/loupe-ux": "~2.0.0",
     "@loupeteam/tmplits": "~0.1.0",
     "@loupeteam/tmplit-basic": "~0.1.0",
     "app": "file:./app/",
-    "@loupeteam/tmplits-login": "file:../../src/HMI/tmplits-login/",
     "bootstrap": "^3.3.4",
     "handlebars": "*",
     "jquery": "*"
