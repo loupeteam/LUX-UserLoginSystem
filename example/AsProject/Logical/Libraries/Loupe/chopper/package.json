@@ -1,0 +1,21 @@
+{
+  "name": "@loupeteam/chopper",
+  "version": "1.5.0",
+  "description": "Loupe's chopper library for Automation Runtime",
+  "homepage": "https://loupeteam.github.io/LoupeDocs/libraries/chopper.html",
+  "scripts": {},
+  "keywords": [],
+  "author": "Loupe",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loupeteam/chopper"
+  },
+  "lpm": {
+    "type": "library"
+  },
+  "dependencies": {
+    "@loupeteam/vartools": ">=0.9.0 <=0.11.9",
+    "@loupeteam/stringext": ">=0.14.0 <=0.14.9"
+  }
+}

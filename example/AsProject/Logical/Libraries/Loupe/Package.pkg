@@ -3,7 +3,6 @@
   <Objects>
     <Object Type="Library" Language="Binary">piper</Object>
     <Object Type="Library" Language="Binary">omjson</Object>
-    <Object Type="Library" Language="Binary">vartools</Object>
     <Object Type="Library" Language="Binary">databuffer</Object>
     <Object Type="Library" Language="Binary">websocket</Object>
     <Object Type="Library" Language="Binary">persist</Object>
@@ -15,6 +14,9 @@
     <Object Type="Library" Language="Binary">llhttp</Object>
     <Object Type="Library" Language="Binary">tcpcomm</Object>
     <Object Type="Library" Language="Binary">ringbuflib</Object>
+    <Object Type="Library" Language="Binary">jsmn_parse</Object>
+    <Object Type="Library" Language="Binary">chopper</Object>
+    <Object Type="Library" Language="Binary">vartools</Object>
     <Object Type="Library" Language="Binary">stringext</Object>
   </Objects>
 </Package>

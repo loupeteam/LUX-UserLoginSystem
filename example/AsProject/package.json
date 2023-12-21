@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@loupeteam/chopper": "^1.5.0",
     "@loupeteam/firstinitprog": "^0.1.1",
+    "@loupeteam/jsmn_parse": "^1.5.0",
     "@loupeteam/llhttp": "^0.1.2",
     "@loupeteam/luxprog": "^0.2.0",
     "@loupeteam/piperprog": "^0.1.1",
