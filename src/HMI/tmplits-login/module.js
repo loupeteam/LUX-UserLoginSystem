@@ -26,34 +26,44 @@ function DefaultLogin(evt) { // TODO: Maybe named something more cryptic
 
 // When DOM is loaded this  
 // function will get executed 
-$(() => { 
+$(document).ready(function(){
     // function will get executed  
     // on click of submit button 
     $("#submitButton").click(function(ev) { 
-        // var form = $("#formID"); 
-        // var url = form.attr('action'); 
+        var form = $("#formID"); 
+        var url = form.attr('action'); 
 
         
-        console.log("Password: ")
+        console.log("Form: ");
+        // console.log( JSON.stringify(form.serialize() ));
         // TODO: Onclick call teh DefaultLOgin funtion with the event arg
         // then do the ajax stuff inside that function.
+        
 
+        $.ajax({ 
+            type: "GET", 
+            url: 'http://127.0.0.1:1238/getUserLvl', 
+            // url: 'https://cat-fact.herokuapp.com/facts', 
+            // data: form.serialize(),
+            // headers: {"user":"test"},
+            data: "{'username':'admin','password':'123test'}",
+            async: false, 
+            success: function(data) { 
+                  
+                // Ajax call completed successfully 
+                // console.log("success");
+                console.log(JSON.stringify( data ));
+                alert("Form Submited Successfully"); 
+            }, 
+            error: function(data) { 
+                  
+                // Some error in ajax call 
+                // console.log("error");
+                // console.log(data);
+                alert("some Error"); 
+            } 
+        }); 
 
-        // $.ajax({ 
-        //     type: "GET", 
-        //     url: '127.0.0.1/getUserLvl', 
-        //     data: form.serialize(), 
-        //     success: function(data) { 
-                  
-        //         // Ajax call completed successfully 
-        //         alert("Form Submited Successfully"); 
-        //     }, 
-        //     error: function(data) { 
-                  
-        //         // Some error in ajax call 
-        //         alert("some Error"); 
-        //     } 
-        // }); 
     }); 
 }); 
 
