@@ -1,51 +1,70 @@
-
+\
 #include <bur/plctypes.h>
 
 #ifdef _DEFAULT_INCLUDES
 	#include <AsDefault.h>
 #endif
 
+
+// Create Function Prototypes
+unsigned long getCallback(parsedBodyData_typ* data, jsmn_callback_data* callbackData);
+
 void _CYCLIC ProgramCyclic(void)
 {
+			
 	// Set up server/response
-	response.ident = server.ident;
-	response.pRequest = &receiveBuffer;
-	response.requestSize = sizeof(receiveBuffer);
-	response.pContent = &sendBuffer;
-	response.contentLength = strlen(sendBuffer);
+	task.internal.response.ident = task.internal.server.ident;
+	task.internal.response.pRequest = (UDINT)&task.internal.receiveBuffer;
+	task.internal.response.requestSize = sizeof(task.internal.receiveBuffer);
+	task.internal.response.pContent = (UDINT)&task.internal.sendBuffer.message;
+	task.internal.response.contentLength = strlen(task.internal.sendBuffer.message);
 	
-	//	for(i = 0; i < 25; i++) {
-	//		if(!strcmp(response.requestHeader.lines.lines[i].name,"user")) {
-	//			strcpy(sendBuffer,response.requestHeader.lines.lines[i].name)
-	//		}
-	//	}
-	isUser = LLHttpHeaderContains(&response.requestHeader.lines,&usernameOperator, &passwordOperator);
-	isAdmin = LLHttpHeaderContains(&response.requestHeader.lines,&usernameAdmin, &passwordAdmin);
+	// Parse the response
+	task.internal.parsedBody.status = JsmnParse((UDINT)&task.internal.parser, (UDINT)&task.internal.receiveBuffer, brsstrlen((UDINT)&task.internal.receiveBuffer), (UDINT)&task.internal.tokens, sizeof(task.internal.tokens)/sizeof(task.internal.tokens[0]));
+	// Re-Initialize the parser object
+	JsmnInit((UDINT)&task.internal.parser);
 	
-	if(isAdmin) {
-		userLvl = ADMIN;
-	}
-	else if(isUser && !isAdmin) {
-		userLvl = OPERATOR;	
+	// Set User Level
+	if(strcmp(task.internal.parsedBody.data.username, task.internal.admin.username) == 0) {
+		if(strcmp(task.internal.parsedBody.data.password, task.internal.admin.password) == 0) {
+			task.internal.userLvl = ADMIN;
+		}
+	}				
+	else if(strcmp(task.internal.parsedBody.data.username, task.internal.user.username) == 0) {
+		if(strcmp(task.internal.parsedBody.data.password, task.internal.user.password) == 0) {
+			task.internal.userLvl = USER;
+		}
 	}
 	else {
-		userLvl = LOGGED_OUT;	
+		task.internal.userLvl = LOGGED_OUT;	
 	}
 	
-//	strcpy(sendBuffer,itoa(userLvl));
-	strcpy(sendBuffer,"DID IT");
+	// Create JSON String
+	ChopRender((UDINT)&task.internal.sendBuffer.message, (UDINT)&task.internal.sendBuffer.template, sizeof(task.internal.sendBuffer.message),(UDINT)&task.internal.sendBuffer.messageLength);
 	
-	response.send = response.send && !response.done; // Reset after message is sent
+	// Send a response
+	task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
+	
+	if(task.internal.response.newRequest) {
+		task.internal.response.pContent = task.internal.sendBuffer.message;
+		task.internal.response.contentLength = strlen(task.internal.sendBuffer.message);
+		task.internal.response.send = 1;
+		task.internal.response.status = LLHTTP_STAT_OK;
+	}
+	
 
-	if(response.newRequest) {
-		response.pContent = sendBuffer;
-		response.contentLength = strlen(sendBuffer);
-		response.send = 1;
-		response.status = LLHTTP_STAT_OK;
-	}
+			
+
+
 	
-	// Call FUBs
-	LLHttpServer(&server);
-	LLHttpResponse(&response);
+	/*
+	* This section contains the Function Block calls.
+	* These calls are ran outside of the state-machine
+	* to ensure proper updating for each PLC scan. 
+	*/
+	
+	// Call HTTP Server & Request Function Blocks
+	LLHttpServer((UDINT)&task.internal.server);
+	LLHttpResponse((UDINT)&task.internal.response);
 }
 

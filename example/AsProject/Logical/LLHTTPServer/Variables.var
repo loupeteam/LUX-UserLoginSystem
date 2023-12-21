@@ -1,21 +1,8 @@
 
 VAR
-	server : LLHttpServer;
-	response : LLHttpResponse;
-	
-	receiveBuffer : STRING[255];
-	sendBuffer : STRING[255];
-	
-	userLvl : userLvl_enum;
-	isUser : BOOL;
-	isAdmin : BOOL;
-	
-	usernameOperator : STRING[255]; 
-	passwordOperator : STRING[255]; 
-	
-	usernameAdmin : STRING[255]; 
-	passwordAdmin : STRING[255]; 
-	
+	task : Task_typ;
+	Configuration : Configuration_typ;
+	useConfig : BOOL; (* Flag to Bypass setting variables using a configuration file. useConfig is DISABLED by default *)
 	
 END_VAR
 
