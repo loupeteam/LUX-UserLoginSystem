@@ -7,65 +7,44 @@
 //Define your tmplit functions here and export them to make them globally available
 import * as util from "../tmplits-utilities/module.js"
 
-function DefaultLogin(evt) { // TODO: Maybe named something more cryptic
+export function DefaultLogin(url) { // TODO: Maybe named something more cryptic
 
     // Look for the login-scope and find the class labeled loginUser (or loginPass) and set as the target so the value can accessed
     // This is done to avoid the use of id attributes 
     // Probably don't need this when using HTTP as it will be directly used by the request and doesn't need to be accessed
-    let scope = evt.target.classList.contains('lui-login-scope') ? evt.target : evt.target.closest('.lui-login-scope')
-    
-    // These values are the ones to be passed to the PLC for verification
-    let loginUser = scope.querySelector('.lui-loginUser')
-    console.log("User: ", loginUser.value)
-    let loginPass = scope.querySelector('.lui-loginPass')
-    console.log("Password: ", loginPass.value)
+    // let scope = evt.target.classList.contains('lui-login-scope') ? evt.target : evt.target.closest('.lui-login-scope')
+    // // These values are the ones to be passed to the PLC for verification
+    // let loginUser = scope.querySelector('.lui-loginUser')
+    // console.log("User: ", loginUser.value)
+    // let loginPass = scope.querySelector('.lui-loginPass')
+    // console.log("Password: ", loginPass.value)
  
+    const response = fetch(url, {
+		method: 'GET',
+        mode: "cors", 
+        // credentials: "include",
+		headers: {
+            // 'Accept': 'application/json'
+            // "Access-Control-Allow-Origin": "*",
+            "Accept": "*/*",
+            "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+            'user':'test'
+		},
+        
+	})
+    .then((response) => response.json())
+    .then(response => console.log(response))
+    .catch(err => console.error(err));
+
+    return response;
 
 }
 
 
-// When DOM is loaded this  
-// function will get executed 
-$(document).ready(function(){
-    // function will get executed  
-    // on click of submit button 
-    $("#submitButton").click(function(ev) { 
-        var form = $("#formID"); 
-        var url = form.attr('action'); 
+// Function will get executed on click of submit button 
+$("#submitButton").click(console.log(DefaultLogin("http://127.0.0.1:1238/getUserLvl")));
 
-        
-        console.log("Form: ");
-        // console.log( JSON.stringify(form.serialize() ));
-        // TODO: Onclick call teh DefaultLOgin funtion with the event arg
-        // then do the ajax stuff inside that function.
-        
-
-        $.ajax({ 
-            type: "GET", 
-            url: 'http://127.0.0.1:1238/getUserLvl', 
-            // url: 'https://cat-fact.herokuapp.com/facts', 
-            // data: form.serialize(),
-            // headers: {"user":"test"},
-            data: "{'username':'admin','password':'123test'}",
-            async: false, 
-            success: function(data) { 
-                  
-                // Ajax call completed successfully 
-                // console.log("success");
-                console.log(JSON.stringify( data ));
-                alert("Form Submited Successfully"); 
-            }, 
-            error: function(data) { 
-                  
-                // Some error in ajax call 
-                // console.log("error");
-                // console.log(data);
-                alert("some Error"); 
-            } 
-        }); 
-
-    }); 
-}); 
+ 
 
 export function TmplitLogin(context, args) {
 
