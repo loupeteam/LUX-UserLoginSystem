@@ -19,21 +19,35 @@ void _CYCLIC ProgramCyclic(void)
 	task.internal.response.pContent = (UDINT)&task.internal.sendBuffer.message;
 	task.internal.response.contentLength = strlen(task.internal.sendBuffer.message);
 	
-	// Parse the response
-	task.internal.parsedBody.status = JsmnParse((UDINT)&task.internal.parser, (UDINT)&task.internal.receiveBuffer, brsstrlen((UDINT)&task.internal.receiveBuffer), (UDINT)&task.internal.tokens, sizeof(task.internal.tokens)/sizeof(task.internal.tokens[0]));
-	// Re-Initialize the parser object
-	JsmnInit((UDINT)&task.internal.parser);
+//	// Parse the response
+//	task.internal.parsedBody.status = JsmnParse((UDINT)&task.internal.parser, (UDINT)&task.internal.receiveBuffer, brsstrlen((UDINT)&task.internal.receiveBuffer), (UDINT)&task.internal.tokens, sizeof(task.internal.tokens)/sizeof(task.internal.tokens[0]));
+//	// Re-Initialize the parser object
+//	JsmnInit((UDINT)&task.internal.parser);
+//	
+//	// Set User Level - using Parsed Body
+//	if(strcmp(task.internal.parsedBody.data.username, task.internal.admin.username) == 0) {
+//		if(strcmp(task.internal.parsedBody.data.password, task.internal.admin.password) == 0) {
+//			task.internal.userLvl = ADMIN;
+//		}
+//	}				
+//	else if(strcmp(task.internal.parsedBody.data.username, task.internal.user.username) == 0) {
+//		if(strcmp(task.internal.parsedBody.data.password, task.internal.user.password) == 0) {
+//			task.internal.userLvl = USER;
+//		}
+//	}
+//	else {
+//		task.internal.userLvl = LOGGED_OUT;	
+//	}
 	
-	// Set User Level
-	if(strcmp(task.internal.parsedBody.data.username, task.internal.admin.username) == 0) {
-		if(strcmp(task.internal.parsedBody.data.password, task.internal.admin.password) == 0) {
-			task.internal.userLvl = ADMIN;
-		}
-	}				
-	else if(strcmp(task.internal.parsedBody.data.username, task.internal.user.username) == 0) {
-		if(strcmp(task.internal.parsedBody.data.password, task.internal.user.password) == 0) {
-			task.internal.userLvl = USER;
-		}
+	// Set User Level - Using Headers
+	task.internal.isUser = LLHttpHeaderContains((UDINT)&task.internal.response.requestHeader.lines,(UDINT)&task.internal.user.username, (UDINT)&task.internal.user.password);
+	task.internal.isAdmin = LLHttpHeaderContains((UDINT)&task.internal.response.requestHeader.lines,(UDINT)&task.internal.admin.username, (UDINT)&task.internal.admin.password);
+
+	if(task.internal.isAdmin) {
+		task.internal.userLvl = ADMIN;
+	}
+	else if(task.internal.isUser && !task.internal.isAdmin) {
+		task.internal.userLvl = USER;	
 	}
 	else {
 		task.internal.userLvl = LOGGED_OUT;	
