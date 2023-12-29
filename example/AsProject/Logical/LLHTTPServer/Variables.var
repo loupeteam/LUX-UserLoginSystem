@@ -1,12 +1,6 @@
-
 VAR
 	task : Task_typ;
 	Configuration : Configuration_typ;
 	useConfig : BOOL; (* Flag to Bypass setting variables using a configuration file. useConfig is DISABLED by default *)
-	
-END_VAR
-
-
-VAR CONSTANT
-
+	sendBuffer : ARRAY[0..10000] OF USINT;
 END_VAR

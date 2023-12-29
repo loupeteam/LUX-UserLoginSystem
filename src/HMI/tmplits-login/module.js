@@ -7,7 +7,7 @@
 //Define your tmplit functions here and export them to make them globally available
 import * as util from "../tmplits-utilities/module.js"
 
-export function DefaultLogin(url) { // TODO: Maybe named something more cryptic
+export function DefaultLogin(url, username, password) { // TODO: Maybe named something more cryptic
 
     // Look for the login-scope and find the class labeled loginUser (or loginPass) and set as the target so the value can accessed
     // This is done to avoid the use of id attributes 
@@ -18,32 +18,49 @@ export function DefaultLogin(url) { // TODO: Maybe named something more cryptic
     // console.log("User: ", loginUser.value)
     // let loginPass = scope.querySelector('.lui-loginPass')
     // console.log("Password: ", loginPass.value)
- 
-    const response = fetch(url, {
-		method: 'GET',
-        mode: "cors", 
-        // credentials: "include",
-		headers: {
-            // 'Accept': 'application/json'
-            // "Access-Control-Allow-Origin": "*",
-            "Accept": "*/*",
-            "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-            'user':'test'
-		},
-        
-	})
-    .then((response) => response.json())
-    .then(response => console.log(response))
-    .catch(err => console.error(err));
+    let request = new XMLHttpRequest();
 
-    return response;
-
+    //TODO: Post allows for a body, but do we really want post? Prolly not..
+    request.open('POST', url, true);    
+    request.onload = function () {
+        // Begin accessing JSON data here
+        var data = JSON.parse(this.response);
+        machine.setUserLevel(data.userLevel);
+    }
+    request.send(JSON.stringify({username:username, password:password}));
+/*
+fetch(url,{
+//fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{//TODO: Adding the params breaks the URI request
+        method: 'GET',
+        //Using the header breaks the request?
+        // headers: {
+        //     'username': username,
+        //     'password': password
+        // },
+    }).then((response) => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }).then((data) => {
+        console.log(data);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+*/
 }
 
-
 // Function will get executed on click of submit button 
-$("#submitButton").click(console.log(DefaultLogin("http://127.0.0.1:1238/getUserLvl")));
-
+$(document).on('click', '#submitButton', function(e) {
+    e.preventDefault();
+    // Get the username and password from the form
+    let username = $('#loginUser').val();
+    let password = $('#loginPass').val();
+    // Call the default login function    
+    DefaultLogin("http://127.0.0.1:1238/getUserLvl", username, password)
+});
  
 
 export function TmplitLogin(context, args) {
@@ -100,11 +117,11 @@ export function TmplitLogin(context, args) {
                     <form role="form" id="formID" action=''>
                       <div class="form-group">
                         <label for="loginUser">Username</label>
-                        <input type="text" class="form-control lui-loginUser" placeholder="Username"/>
+                        <input type="text" class="form-control lui-loginUser" placeholder="Username" id="loginUser"/>
                       </div>
                       <div class="form-group">
                         <label for="loginPass">Password</label>
-                          <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
+                          <input type="password" class="form-control lui-loginPass" placeholder="Password" id="loginPass"/>
                       </div>
                       <button type="submit" id="submitButton" class="btn btn-default">Submit</button>
                     </form>
