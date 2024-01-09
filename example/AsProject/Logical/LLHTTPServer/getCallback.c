@@ -5,7 +5,7 @@
 #include <AsDefault.h>
 #endif
 
-unsigned long getCallback(parsedBodyData_typ* data, jsmn_callback_data* callbackData) {
+unsigned long getCallback(parsedQueryData_typ* data, jsmn_callback_data* callbackData) {
 	/*
 	* This Callback is used by the parser to loop through each line of a recieved JSON string
 	* and extract the desired information. 
@@ -16,7 +16,7 @@ unsigned long getCallback(parsedBodyData_typ* data, jsmn_callback_data* callback
 	if(callbackData->Size == 0) { 
 
 		if((brsstrcmp((UDINT)callbackData->Structure[1], (UDINT)"username") == 0)) { 			// Check if Key is "username"
-			brsstrcpy((UDINT)data->username, (UDINT)callbackData->Value); 						// Apply json value to PLC var
+			brsstrcpy((UDINT)data->userName, (UDINT)callbackData->Value); 						// Apply json value to PLC var
 		}
 			
 		else if(brsstrcmp((UDINT)callbackData->Structure[1], (UDINT)"password") == 0 ) { 	// Check if Key is "password"

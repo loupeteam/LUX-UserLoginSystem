@@ -65,8 +65,9 @@ void _INIT ProgramInit(void)
 	
 	// Initialize parser values to default
 	JsmnInit((UDINT)&task.internal.parser);
+	strcpy((UDINT)&task.internal.queryJSON, "");
 	
-	// Initialize & complie the Chopper template 
+//	// Initialize & complie the Chopper template 
 	strcpy(task.internal.sendBuffer.template.source, "{\"userLevel\":\"{{LLHTTPServ:task.internal.userLvl}}\" }");
 	ChopCompile((UDINT)&task.internal.sendBuffer.template, (UDINT)&task.internal.sendBuffer.template.source);
 }

@@ -4,39 +4,28 @@
 //
 //
 
-//Define your tmplit functions here and export them to make them globally available
+// Define your tmplit functions here and export them to make them globally available
 import * as util from "../tmplits-utilities/module.js"
 
 export function DefaultLogin(url, username, password) { // TODO: Maybe named something more cryptic
 
-    // Look for the login-scope and find the class labeled loginUser (or loginPass) and set as the target so the value can accessed
-    // This is done to avoid the use of id attributes 
-    // Probably don't need this when using HTTP as it will be directly used by the request and doesn't need to be accessed
-    // let scope = evt.target.classList.contains('lui-login-scope') ? evt.target : evt.target.closest('.lui-login-scope')
-    // // These values are the ones to be passed to the PLC for verification
-    // let loginUser = scope.querySelector('.lui-loginUser')
-    // console.log("User: ", loginUser.value)
-    // let loginPass = scope.querySelector('.lui-loginPass')
-    // console.log("Password: ", loginPass.value)
-    let request = new XMLHttpRequest();
 
-    //TODO: Post allows for a body, but do we really want post? Prolly not..
-    request.open('POST', url, true);    
-    request.onload = function () {
-        // Begin accessing JSON data here
-        var data = JSON.parse(this.response);
-        machine.setUserLevel(data.userLevel);
-    }
-    request.send(JSON.stringify({username:username, password:password}));
-/*
-fetch(url,{
-//fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{//TODO: Adding the params breaks the URI request
-        method: 'GET',
-        //Using the header breaks the request?
-        // headers: {
-        //     'username': username,
-        //     'password': password
-        // },
+
+    // -------------- Using XMLHttpRequest----------------------
+    // let request = new XMLHttpRequest();
+
+    // //TODO: Post allows for a body, but do we really want post? Prolly not..
+    // request.open('POST', url, true);    
+    // request.onload = function () {
+    //     // Begin accessing JSON data here
+    //     var data = JSON.parse(this.response);
+    //     machine.setUserLevel(data.userLevel);
+    // }
+    // request.send(JSON.stringify({username:username, password:password}));
+    // -------------- Using XMLHttpRequest----------------------
+
+fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
+    method: 'GET',
     }).then((response) => {
         if (response.ok) {
             return response.json();
@@ -49,7 +38,6 @@ fetch(url,{
     .catch((error) => {
         console.log(error);
     });
-*/
 }
 
 // Function will get executed on click of submit button 
