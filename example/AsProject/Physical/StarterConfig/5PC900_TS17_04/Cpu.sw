@@ -8,14 +8,16 @@
     <Task Name="MachinePro" Source="MachineControl.MachineProg.prg" Memory="UserROM" Language="IEC" Debugging="true" />
     <Task Name="MachineHMI" Source="MachineControl.MachineHMI.prg" Memory="UserROM" Language="IEC" Debugging="true" />
   </TaskClass>
-  <TaskClass Name="Cyclic#4" />
+  <TaskClass Name="Cyclic#4">
+    <Task Name="LLHTTPServ" Source="LLHTTPServer.prg" Memory="UserROM" Language="ANSIC" Debugging="true" />
+  </TaskClass>
   <TaskClass Name="Cyclic#5" />
   <TaskClass Name="Cyclic#6" />
   <TaskClass Name="Cyclic#7" />
   <TaskClass Name="Cyclic#8">
     <Task Name="ErrorProg" Source="Diagnostics.ErrorProg.prg" Memory="UserROM" Language="IEC" Debugging="true" />
     <Task Name="RevInfo" Source="Infrastructure.RevInfo.RevInfo.prg" Memory="UserROM" Language="IEC" Debugging="true" />
-    <Task Name="webHMIProg" Source="webHMI.webHMIProg.prg" Memory="UserROM" Language="IEC" Debugging="true" />
+    <Task Name="LuxProg" Source="Lux.LuxProg.prg" Memory="UserROM" Language="IEC" Debugging="true" />
   </TaskClass>
   <Binaries>
     <BinaryObject Name="udbdef" Source="" Memory="UserROM" Language="Binary" />
@@ -82,5 +84,8 @@
     <LibraryObject Name="databuffer" Source="Libraries.Loupe.databuffer.lby" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="tcpcomm" Source="Libraries.Loupe.tcpcomm.lby" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="websocket" Source="Libraries.Loupe.websocket.lby" Memory="UserROM" Language="Binary" Debugging="true" />
+    <LibraryObject Name="llhttp" Source="Libraries.Loupe.llhttp.lby" Memory="UserROM" Language="Binary" Debugging="true" />
+    <LibraryObject Name="jsmn_parse" Source="Libraries.Loupe.jsmn_parse.lby" Memory="UserROM" Language="Binary" Debugging="true" />
+    <LibraryObject Name="chopper" Source="Libraries.Loupe.chopper.lby" Memory="UserROM" Language="Binary" Debugging="true" />
   </Libraries>
 </SwConfiguration>

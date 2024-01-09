@@ -1,0 +1,20 @@
+{
+    "debug": {
+        "enabled": true,
+        "comment": true,
+        "loglevel": 1
+    },
+    "startPage": {
+        "container": "main",
+        "name": "main"
+    },
+    "pages": [
+        {
+            "name": "main",
+            "file": "app/views/main.handlebars"
+        }
+    ],
+    "libraries": [
+        "app/controls/custom-ui.handlebars"
+    ]
+}

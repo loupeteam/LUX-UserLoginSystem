@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@loupeteam/ringbuflib": ">=0.2.0",
+    "@loupeteam/logthat": "*",
     "@loupeteam/stringext": ">=0.4.0"
   }
 }
