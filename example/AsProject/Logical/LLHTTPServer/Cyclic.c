@@ -7,8 +7,8 @@
 
 
 // Create Function Prototypes
-unsigned long getCallback(parsedQueryData_typ* data, jsmn_callback_data* callbackData);
-unsigned long parseQuery(UDINT* requestUri, UDINT* queryJSON);
+unsigned long queryCallback(parsedQueryData_typ* data, jsmn_callback_data* callbackData);
+unsigned long queryToJson(UDINT* requestUri, UDINT* queryJSON);
 
 void _CYCLIC ProgramCyclic(void)
 {
@@ -49,13 +49,14 @@ void _CYCLIC ProgramCyclic(void)
 	
 	if(task.internal.response.newRequest) {
 		
-		
-		
-		parseQuery(&task.internal.response.requestHeader.uri, &task.internal.queryJSON);
+		// Reset queryJson string prior to calling the parser
+		strcpy((UDINT)&task.internal.queryJSON,"");
+		// Parse the uri and convert to a json string
+		queryToJson(&task.internal.response.requestHeader.uri, &task.internal.queryJSON);
 		
 		
 		// Re-Initialize the parser object
-		//		task.internal.parser.callback.pFunction = getCallback;
+		//		task.internal.parser.callback.pFunction = queryCallback;
 		//		task.internal.parser.callback.pUserData = &task.internal.parsedBody;
 		//		JsmnInit((UDINT)&task.internal.parser);
 

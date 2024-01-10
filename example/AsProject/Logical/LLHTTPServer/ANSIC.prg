@@ -7,7 +7,7 @@
     <File Description="Exit code">Exit.c</File>
     <File Description="Local data types" Private="true">Types.typ</File>
     <File Description="Local variables" Private="true">Variables.var</File>
-    <File>getCallback.c</File>
-    <File>parseQuery.c</File>
+    <File>queryCallback.c</File>
+    <File>queryToJson.c</File>
   </Files>
 </Program>
