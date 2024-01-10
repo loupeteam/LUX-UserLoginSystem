@@ -56,16 +56,21 @@ void _CYCLIC ProgramCyclic(void)
 		
 		
 		// Re-Initialize the parser object
-		//		task.internal.parser.callback.pFunction = queryCallback;
-		//		task.internal.parser.callback.pUserData = &task.internal.parsedBody;
-		//		JsmnInit((UDINT)&task.internal.parser);
+		task.internal.parser.callback.pFunction = queryCallback;
+		task.internal.parser.callback.pUserData = &task.internal.parsedQuery;
+		JsmnInit((UDINT)&task.internal.parser);
 
-		// Parse the queryJSON
-		//task.internal.parsedQuery.status = JsmnParse((UDINT)&task.internal.parser, (UDINT)&task.internal.receiveBuffer, brsstrlen((UDINT)&task.internal.receiveBuffer), (UDINT)&task.internal.tokens, sizeof(task.internal.tokens)/sizeof(task.internal.tokens[0]));
+		// Parse the queryJSON to extract the username and password
+		task.internal.parsedQuery.status = JsmnParse((UDINT)&task.internal.parser, (UDINT)&task.internal.queryJSON, brsstrlen((UDINT)&task.internal.queryJSON), (UDINT)&task.internal.tokens, sizeof(task.internal.tokens)/sizeof(task.internal.tokens[0]));
 		
-		// Set User Level - using Parsed Body
+		
+		
+		
+		// Set User Level - using Parsed Query
 		task.internal.userLvl = LOGGED_OUT;
 	
+		
+		
 		// Create JSON String
 		ChopRender((UDINT)&task.internal.sendBuffer.message, (UDINT)&task.internal.sendBuffer.template, sizeof(task.internal.sendBuffer.message),(UDINT)&task.internal.sendBuffer.messageLength);
 	
