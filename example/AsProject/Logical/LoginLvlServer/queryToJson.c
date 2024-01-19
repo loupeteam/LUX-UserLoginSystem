@@ -1,7 +1,5 @@
-
 #include <bur/plctypes.h>
 #include <string.h>
-
 #ifdef _DEFAULT_INCLUDES
 #include <AsDefault.h>
 #endif

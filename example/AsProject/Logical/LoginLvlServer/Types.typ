@@ -1,4 +1,3 @@
-
 TYPE
 	Task_typ : 	STRUCT 
 		status : Task_Status_typ;
@@ -16,8 +15,8 @@ TYPE
 		(*Web Comms*)
 		server : LLHttpServer;
 		response : LLHttpResponse;
-		defaultResponse : LLHttpResponse;
 		responseHeader : LLHttpHeader_typ;
+		defaultResponse : LLHttpResponse;		
 		defaultReceiveBuffer : STRING[8000];
 		defaultSendBuffer : STRING[8000];
 		
@@ -30,16 +29,7 @@ TYPE
 		(*User Level Application Vars*)
 		sendBuffer : sendBuffer_typ;
 		userLvl : userLvl_enum;
-		user : Credential_typ;
-		isUser : BOOL;
-		admin : Credential_typ;
-		isAdmin : BOOL;
 		
-	END_STRUCT;
-	
-	Credential_typ : 	STRUCT 
-		username : STRING[255];
-		password : STRING[255];
 	END_STRUCT;
 	
 END_TYPE
@@ -74,7 +64,6 @@ TYPE
 END_TYPE
 
 (* ----- Enumerations ----- *)
-
 TYPE
 	userLvl_enum : 
 		(

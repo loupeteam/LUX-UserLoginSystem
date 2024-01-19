@@ -8,6 +8,6 @@
     <File Description="Local variables" Private="true">Variables.var</File>
     <File>queryCallback.c</File>
     <File>queryToJson.c</File>
-    <File>getArUserLvl.c</File>
+    <File>ConfigureUsers.c</File>
   </Files>
 </Program>
