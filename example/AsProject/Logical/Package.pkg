@@ -10,5 +10,6 @@
     <Object Type="Package">MachineControl</Object>
     <Object Type="Package">Lux</Object>
     <Object Type="Program" Language="ANSIC">LLHTTPServer</Object>
+    <Object Type="Program" Language="ANSIC">Program</Object>
   </Objects>
 </Package>
