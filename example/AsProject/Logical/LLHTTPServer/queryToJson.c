@@ -18,8 +18,10 @@ unsigned long queryToJson(UDINT *requestUri, UDINT *queryJSON) {
 	strcat(queryJSON, "{ ");
 	
 	// Create a substring of just the query parameters
-	char* queryStr;	
-	queryStr = strchr(requestUri, '?');
+	char* queryStr;
+	char* tempUriCopy;
+	strcpy(tempUriCopy, requestUri);
+	queryStr = strchr(tempUriCopy, '?');
 	
 	// Set up vars for use with strtok_r function from the string.h library
 	char* token;
