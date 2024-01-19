@@ -26,14 +26,14 @@ void _CYCLIC ProgramCyclic(void)
 	// Set up default server/response
 	task.internal.defaultResponse.enable = 1;
 	task.internal.defaultResponse.ident = task.internal.server.ident;
-	task.internal.defaultResponse.pRequest = (UDINT)&task.internal.receiveBufferNotFound;
-	task.internal.defaultResponse.requestSize = sizeof(task.internal.receiveBufferNotFound);
+	task.internal.defaultResponse.pRequest = (UDINT)&task.internal.defaultReceiveBuffer;
+	task.internal.defaultResponse.requestSize = sizeof(task.internal.defaultReceiveBuffer);
 	LLHttpResponse(&task.internal.defaultResponse);
 	task.internal.defaultResponse.send = task.internal.defaultResponse.send && !task.internal.defaultResponse.done; // Reset after message is sent
 
 	if(task.internal.defaultResponse.newRequest) {
-		task.internal.defaultResponse.pContent = sendBuffer;
-		task.internal.defaultResponse.contentLength = strlen(sendBuffer);
+		task.internal.defaultResponse.pContent = (UDINT)&task.internal.defaultSendBuffer;
+		task.internal.defaultResponse.contentLength = strlen(task.internal.defaultSendBuffer);
 		task.internal.defaultResponse.send = 1;
 		task.internal.defaultResponse.status = LLHTTP_STAT_OK;
 	}

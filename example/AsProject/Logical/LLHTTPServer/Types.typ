@@ -18,7 +18,8 @@ TYPE
 		response : LLHttpResponse;
 		defaultResponse : LLHttpResponse;
 		responseHeader : LLHttpHeader_typ;
-		receiveBufferNotFound : STRING[8000];
+		defaultReceiveBuffer : STRING[8000];
+		defaultSendBuffer : STRING[8000];
 		
 		(*JSON Parser*)
 		parser : jsmn_parser;

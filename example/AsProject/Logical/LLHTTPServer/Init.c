@@ -36,7 +36,7 @@ void _INIT ProgramInit(void)
 	task.internal.defaultResponse.numUserHeaders = sizeof(task.internal.responseHeader.lines)/sizeof(task.internal.responseHeader.lines[0]);
 	
 	// Add custom 404 page
-	strcpy(sendBuffer, ""
+	strcpy(task.internal.defaultSendBuffer, ""
 		"<!DOCTYPE html>"
 		"<html lang=\"en\">"
 		"<head>"
