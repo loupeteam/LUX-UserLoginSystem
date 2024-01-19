@@ -50,7 +50,7 @@ void _CYCLIC ProgramCyclic(void)
 	if(task.internal.response.newRequest) {
 		
 		// Reset queryJson string prior to calling the parser
-		strcpy((UDINT)&task.internal.queryJSON,"");
+		memset((UDINT)&task.internal.queryJSON,'\0',sizeof(task.internal.queryJSON));
 		// Parse the uri and convert to a json string
 		queryToJson(&task.internal.response.requestHeader.uri, &task.internal.queryJSON);
 		
