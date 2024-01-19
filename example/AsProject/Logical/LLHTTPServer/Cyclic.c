@@ -35,7 +35,7 @@ void _CYCLIC ProgramCyclic(void)
 		task.internal.defaultResponse.pContent = (UDINT)&task.internal.defaultSendBuffer;
 		task.internal.defaultResponse.contentLength = strlen(task.internal.defaultSendBuffer);
 		task.internal.defaultResponse.send = 1;
-		task.internal.defaultResponse.status = LLHTTP_STAT_OK;
+		task.internal.defaultResponse.status = LLHTTP_STAT_NotFound;
 	}
 	
 	// Set up server/response for new request
