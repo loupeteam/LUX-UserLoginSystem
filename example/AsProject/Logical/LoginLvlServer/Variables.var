@@ -3,3 +3,8 @@ VAR
 	Configuration : Configuration_typ;
 	useConfig : BOOL; (* Flag to Bypass setting variables using a configuration file. useConfig is DISABLED by default *)
 END_VAR
+
+VAR CONSTANT
+	MAI_USERS : UDINT := 4;  (* Maximum number of users minus 1 *)
+	MAX_USER_ITEM_LEN : USINT := 128; (*String length for usernames & passwords - governed by ARUser Library expected string size*)
+END_VAR

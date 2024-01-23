@@ -1,14 +1,23 @@
 #include <bur/plctypes.h>
 #ifdef _DEFAULT_INCLUDES
-	#include <AsDefault.h>
+#include <AsDefault.h>
 #endif
 
 // Create Function Prototypes
 unsigned long queryCallback(parsedQueryData_typ* data, jsmn_callback_data* callbackData);
 unsigned long queryToJson(UDINT* requestUri, UDINT* queryJSON);
+void ConfigureUser(ArUser_typ* ArUser, Credential_typ* user);
 
 void _CYCLIC ProgramCyclic(void)
 {
+	// ----------------- CONFIGURE USERS -----------------
+	if(task.cmd.configureUsers) {
+		for(int i = 0; i<MAI_USERS; i++) {
+			ConfigureUser(&task.internal.ArUser, &task.internal.users[i]);
+		}
+		task.cmd.configureUsers = 0;
+	}	
+	
 	// ----------------- HTTP SERVER -----------------
 	// Call the HTTP Server FUB
 	LLHttpServer((UDINT)&task.internal.server);
@@ -61,13 +70,13 @@ void _CYCLIC ProgramCyclic(void)
 		// ----------------- GET USER LEVEL -----------------	
 		//Get return from ArUserAuthenticatePassword
 		// if Authentic
-			// Set User Level - Using ArUserGetProperty
+		// Set User Level - Using ArUserGetProperty
 		// if not 
-			// Set User Level = LOGGED_OUT;
+		// Set User Level = LOGGED_OUT;
 		
 		
 		// ... Temp until ARUser is implemented
-		task.internal.userLvl = LOGGED_OUT;
+		task.internal.loginLvl = LOGGED_OUT;
 	
 
 		// ----------------- SEND RESPONSE WITH USER LEVEL -----------------	

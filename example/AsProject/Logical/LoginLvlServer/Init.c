@@ -7,8 +7,6 @@
 * This file is used to set up the unchanging or initial values needed in the LoginLvlServer task.
 */
 
-// Create Function prototypes
-void ConfigureUsers();
 
 void _INIT ProgramInit(void)
 {
@@ -58,9 +56,21 @@ void _INIT ProgramInit(void)
 	strcpy((UDINT)&task.internal.queryJSON, "");
 	
 	// ----------------- CONFIGURE USERS & ROLES -----------------
-	// Call custom function for User system setup
-	ConfigureUsers();
-	
+	// Set app values (from Configuration)
+	if(useConfig) {
+		//for(int i = 0; i<MAI_USERS; i++) {
+		strcpy(task.internal.users[0].username, Configuration.users[0].username);
+		strcpy(task.internal.users[0].password, Configuration.users[0].password);
+		strcpy(task.internal.users[0].loginLvl, Configuration.users[0].loginLvl);
+		//}
+	} else {
+		strcpy(task.internal.users[0].username, "admin");
+		strcpy(task.internal.users[0].password, "test");
+		task.internal.users[0].loginLvl = ADMIN;
+	}
+	// Set Command to call custom function to set up users in the system
+	task.cmd.configureUsers = 1;
+
 	// ----------------- USER LEVEL RESPONSE -----------------
 	// Initialize & complie the Chopper template 
 	strcpy(task.internal.sendBuffer.template.source, "{\"userLevel\":\"{{LLHTTPServ:task.internal.userLvl}}\" }");
