@@ -12,10 +12,28 @@ void _CYCLIC ProgramCyclic(void)
 {
 	// ----------------- CONFIGURE USERS -----------------
 	if(task.cmd.configureUsers) {
-		for(int i = 0; i<MAI_USERS; i++) {
-			ConfigureUser(&task.internal.ArUser, &task.internal.users[i]);
+		
+		// Export List of user to File for debugging
+		//	strcpy(&task.internal.ArUser.path, "C:\\Users\\curti\\TEMP");
+		memcpy(&task.internal.ArUser.ArUserExport_0.FilePath, &task.internal.ArUser.FilePath, strlen(task.internal.ArUser.FilePath));
+		task.internal.ArUser.ArUserExport_0.Execute = 1;
+		// Run the Export FUB
+		ArUserExport(&task.internal.ArUser.ArUserExport_0);
+		// Check that the FUB is complete
+		if (task.internal.ArUser.ArUserExport_0.Done && !task.internal.ArUser.ArUserExport_0.Busy) {
+			task.internal.ArUser.ArUserExport_0.Execute = 0;
+			task.cmd.configureUsers = 0;
+		} else if (task.internal.ArUser.ArUserExport_0.Error) {
+			task.status.error = 1;
 		}
+		
+		// Loop Through User Array and Create ArUsers with LoginLvl Properties
+		//for(int i = 0; i<MAI_USERS; i++) {
+//		ConfigureUser(&task.internal.ArUser, &task.internal.users[1]);
+		//}
 		task.cmd.configureUsers = 0;
+			
+
 	}	
 	
 	// ----------------- HTTP SERVER -----------------

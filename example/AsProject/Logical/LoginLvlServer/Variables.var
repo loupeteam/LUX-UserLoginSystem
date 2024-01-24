@@ -2,6 +2,7 @@ VAR
 	task : Task_typ;
 	Configuration : Configuration_typ;
 	useConfig : BOOL; (* Flag to Bypass setting variables using a configuration file. useConfig is DISABLED by default *)
+	
 END_VAR
 
 VAR CONSTANT

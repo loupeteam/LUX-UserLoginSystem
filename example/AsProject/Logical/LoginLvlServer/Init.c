@@ -7,7 +7,6 @@
 * This file is used to set up the unchanging or initial values needed in the LoginLvlServer task.
 */
 
-
 void _INIT ProgramInit(void)
 {
 	// ----------------- HTTP SERVER -----------------
@@ -64,12 +63,48 @@ void _INIT ProgramInit(void)
 		strcpy(task.internal.users[0].loginLvl, Configuration.users[0].loginLvl);
 		//}
 	} else {
-		strcpy(task.internal.users[0].username, "admin");
+		strcpy(task.internal.users[0].username, "admin2");
 		strcpy(task.internal.users[0].password, "test");
 		task.internal.users[0].loginLvl = ADMIN;
+		strcpy(task.internal.users[1].username, "admin1");
+		strcpy(task.internal.users[1].password, "test1");
+		task.internal.users[1].loginLvl = ADMIN;
 	}
-	// Set Command to call custom function to set up users in the system
-	task.cmd.configureUsers = 1;
+	//	// Set Command to call custom function to set up users in the system
+		task.cmd.configureUsers = 0;
+	//	
+	//	// Export List of user to File for debugging
+	//	task.internal.ArUser.ArUserInitList_0.Execute = 1; 
+	//	task.internal.ArUser.ArUserInitList_0.ListType = arUSER_USER;
+	//	memcpy(&task.internal.ArUser.ArUserInitList_0.ElementName, &task.internal.users[0].username, strlen(task.internal.users[0].username));
+	//	// Run the Export FUB
+	//	ArUserInitList(&task.internal.ArUser.ArUserInitList_0);
+	//	// Check that the FUB is complete
+	//	if (&task.internal.ArUser.ArUserInitList_0.Done && !&task.internal.ArUser.ArUserInitList_0.Busy) {
+	//		task.internal.ArUser.ArUserInitList_0.Execute = 0;
+	//		task.cmd.configureUsers = 0;
+	//	} else if (&task.internal.ArUser.ArUserInitList_0.Error) {
+	//		task.status.error = 1;
+	//	}
+
+	// Loop Through User Array and Create ArUsers with LoginLvl Properties
+//	for(int i = 0; i<MAI_USERS; i) {
+//		ConfigureUser(&task.internal.ArUser, &task.internal.users[1]);
+////	}
+//			
+//	// Export List of user to File for debugging
+//	//	strcpy(&task.internal.ArUser.path, "C:\\Users\\curti\\TEMP");
+//	memcpy(&task.internal.ArUser.ArUserExport_0.FilePath, &task.internal.ArUser.FilePath, strlen(task.internal.ArUser.FilePath));
+//	task.internal.ArUser.ArUserExport_0.Execute = 1;
+//	// Run the Export FUB
+//	ArUserExport(&task.internal.ArUser.ArUserExport_0);
+//	// Check that the FUB is complete
+//	if (&task.internal.ArUser.ArUserExport_0.Done && !&task.internal.ArUser.ArUserExport_0.Busy) {
+//		task.internal.ArUser.ArUserExport_0.Execute = 0;
+//		task.cmd.configureUsers = 0;
+//	} else if (&task.internal.ArUser.ArUserExport_0.Error) {
+//		task.status.error = 1;
+//	}
 
 	// ----------------- USER LEVEL RESPONSE -----------------
 	// Initialize & complie the Chopper template 

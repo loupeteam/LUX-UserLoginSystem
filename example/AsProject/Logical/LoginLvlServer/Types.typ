@@ -35,7 +35,7 @@ TYPE
 		sendBuffer : sendBuffer_typ;
 		ArUser : ArUser_typ;
 		users : ARRAY[0..MAI_USERS] OF Credential_typ;
-		loginLvl : loginLvl_enum;
+		loginLvl : loginLvl_enum; (* LoginLvl to be set from ArUser system and returned via HTTP response *)
 		
 	END_STRUCT;
 	
@@ -44,35 +44,16 @@ END_TYPE
 
 (* ----- ARUser System Types ----- *)
 TYPE
-	ArUser_typ : 	STRUCT 
-				
+	ArUser_typ : 	STRUCT 		
 		ArUserCreate_0 : ArUserCreate; (*Create an user with given name; default no password *)
-		ArUserDelete_0 : ArUserDelete; (*Delete an user  *)
-		ArUserExport_0 : ArUserExport; (*Export all user and role data*)
-		ArUserImport_0 : ArUserImport; (*Import all user and role data*)
 		ArUserSetPassword_0 : ArUserSetPassword; (*Set user password*)
-		ArUserAssignRole_0 : ArUserAssignRole; (*Aisign a role to a user*)
-		ArUserReleaseRole_0 : ArUserReleaseRole; (*Remove a role from a user*)
-		ArUserGetNext_0 : ArUserGetNext; (*Get next user information*)
-		ArUserGetFirst_0 : ArUserGetFirst; (*Get first user information*)
-		ArUserInitList_0 : ArUserInitList; (*Initialize user or role list*)
-		ArUserDestroyList_0 : ArUserDestroyList; (*Free up memory for list*)
-		ArUserIdent : ArUserIdentType; (*Ident from user ot role list*)
-		ArUserGetProperty_0 : ArUserGetProperty; (*Read property*)
 		ArUserSetProperty_0 : ArUserSetProperty; (*Write a property*)
-		PropertyName : STRING[100]; (*Name of the property*)
-		
-		tmpUserIdx : USINT;
-		tmpUsername : STRING[MAX_USER_ITEM_LEN];
-		tmpPassword : STRING[MAX_USER_ITEM_LEN];
-		tmpUserNew : STRING[MAX_USER_ITEM_LEN];
-		
-		idx : USINT;
-		idy : USINT;
-		override : USINT;
-		
-		internalState : ArUser_internalState_emun;
-		
+		ArUserGetProperty_0 : ArUserGetProperty; (*Read property*)
+		ArUserInitList_0 : ArUserInitList;
+		ArUserList : ArUserIdentType;
+		ArUserExport_0 : ArUserExport; (*Export all user and role data*)
+		FilePath : STRING[128] := 'C:/Temp/UserDataExport.txt';
+		internalState : ArUser_internalState_emun; (* Internal State for managing asynch execution of FUBs in cyclic *)
 	END_STRUCT;
 	
 	Credential_typ : 	STRUCT 
