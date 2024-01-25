@@ -47,7 +47,7 @@ $(document).on('click', '#submitButton', function(e) {
     let username = $('#loginUser').val();
     let password = $('#loginPass').val();
     // Call the default login function    
-    DefaultLogin("http://127.0.0.1:1238/getUserLvl", username, password)
+    DefaultLogin("http://127.0.0.1:1238/getLoginLvl", username, password)
 });
  
 

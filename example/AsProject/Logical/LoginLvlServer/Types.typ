@@ -1,5 +1,6 @@
 TYPE
 	Task_typ : 	STRUCT 
+		cmd : Task_Command_typ;
 		status : Task_Status_typ;
 		internal : Task_Internal_typ;
 	END_STRUCT;
@@ -7,6 +8,10 @@ END_TYPE
 
 (* ----- Main Task Sturcture ----- *)
 TYPE
+	Task_Command_typ : STRUCT
+		exportUsers : BOOL;
+	END_STRUCT;
+	
 	Task_Status_typ : 	STRUCT 
 		error : BOOL;
 	END_STRUCT;
@@ -28,22 +33,24 @@ TYPE
 				
 		(*User Level Application Vars*)
 		sendBuffer : sendBuffer_typ;
-		userLvl : userLvl_enum;
+		loginLvl : loginLvl_enum;
+		ArUser : ArUser_typ;
 		
 	END_STRUCT;
 	
 END_TYPE
 
-(* ----- Configuration Types ----- *)
+(* ----- MpUserX Types ----- *)
 TYPE
-	Configuration_typ : 	STRUCT 
-		user : Configuration_Credential_typ;
-		admin : Configuration_Credential_typ;
+	
+	ArUser_typ : 	STRUCT 		
+		HasRole_FB : ArUserHasRole;
+		Export_FB : ArUserExport;
+		
+		FilePath : STRING[MAX_USER_ITEM_LEN] := 'C:/Temp/UserDataExport.txt';
 	END_STRUCT;
-	Configuration_Credential_typ : 	STRUCT 
-		username : STRING[255];
-		password : STRING[255];
-	END_STRUCT;
+	
+	
 END_TYPE
 
 (* ----- JSON Types ----- *)
@@ -53,8 +60,8 @@ TYPE
 		status : INT;
 	END_STRUCT;
 	parsedQueryData_typ : 	STRUCT 
-		userName : STRING[255];
-		password : STRING[255];
+		userName : STRING[MAX_USER_ITEM_LEN];
+		password : STRING[MAX_USER_ITEM_LEN];
 	END_STRUCT;
 	sendBuffer_typ : 	STRUCT 
 		template : Chop_Template_typ;
@@ -65,10 +72,10 @@ END_TYPE
 
 (* ----- Enumerations ----- *)
 TYPE
-	userLvl_enum : 
+	loginLvl_enum : 
 		(
 		LOGGED_OUT,
 		USER,
 		ADMIN
-		);
+	);
 END_TYPE
