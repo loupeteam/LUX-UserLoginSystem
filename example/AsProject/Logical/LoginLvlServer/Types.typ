@@ -10,10 +10,13 @@ END_TYPE
 TYPE
 	Task_Command_typ : STRUCT
 		exportUsers : BOOL;
+		authRequest : BOOL;
+		
 	END_STRUCT;
 	
 	Task_Status_typ : 	STRUCT 
 		error : BOOL;
+		isAuth : BOOL;
 	END_STRUCT;
 	
 	Task_Internal_typ : 	STRUCT  (* Information not to be accessed outside this task *)
@@ -46,6 +49,8 @@ TYPE
 	ArUser_typ : 	STRUCT 		
 		HasRole_FB : ArUserHasRole;
 		Export_FB : ArUserExport;
+		AuthenticatePassword_FB : ArUserAuthenticatePassword;
+		
 		
 		FilePath : STRING[MAX_USER_ITEM_LEN] := 'C:/Temp/UserDataExport.txt';
 	END_STRUCT;

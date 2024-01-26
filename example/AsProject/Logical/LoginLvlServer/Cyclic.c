@@ -41,9 +41,10 @@ void _CYCLIC ProgramCyclic(void)
 	// Call the HTTP Response FUB on the Response
 	LLHttpResponse((UDINT)&task.internal.response);
 	task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
+	
 	// Check for new Requests on the desired uri
-	if(task.internal.response.newRequest) {
-		
+	if(task.internal.response.newRequest) { 
+
 		// ----------------- QUERY PARAMETERS PARSER -----------------
 		// Reset queryJson string prior to calling the parser
 		memset((UDINT)&task.internal.queryJSON,'\0',sizeof(task.internal.queryJSON));
@@ -58,62 +59,79 @@ void _CYCLIC ProgramCyclic(void)
 		// Parse the queryJSON to extract the username and password and set to PV's
 		task.internal.parsedQuery.status = JsmnParse((UDINT)&task.internal.parser, (UDINT)&task.internal.queryJSON, brsstrlen((UDINT)&task.internal.queryJSON), (UDINT)&task.internal.tokens, sizeof(task.internal.tokens)/sizeof(task.internal.tokens[0]));
 		
-		task.internal.ArUser.HasRole_FB.Execute = 1;
-		
-		} // End if for new response on expected uri
-	
-	// ----------------- GET USER LEVEL -----------------	
-	//Get return from ArUserAuthenticatePassword
-	// if Authentic
-	// Set User Level - Using ArUserGetProperty
-	// if not 
-	// Set User Level = LOGGED_OUT;
-	
-	memcpy(&task.internal.ArUser.HasRole_FB.UserName, &task.internal.parsedQuery.data.userName, strlen(task.internal.parsedQuery.data.userName));
-	strcpy(&task.internal.ArUser.HasRole_FB.RoleName,"Administrators");
-	
-	ArUserHasRole(&task.internal.ArUser.HasRole_FB);
-
-	// Check that the FUB is complete
-	if (task.internal.ArUser.HasRole_FB.Done && !task.internal.ArUser.HasRole_FB.Busy) {
-		task.internal.ArUser.HasRole_FB.Execute = 0;
-	} else if (task.internal.ArUser.HasRole_FB.Error) {
-		// TODO: check against error ID to see if exists
-		task.status.error = 1;
+		// Set command to authenticate & process newRequest
+		task.cmd.authRequest = 1;
 	}
 	
-	// ----------------- EXPORT USERS (FOR DEBUG) -----------------
-	if(task.cmd.exportUsers) {
+	// Authenticate & Process New Request
+	if (task.cmd.authRequest) {
 		
-		// Export List of user to File for debugging
-		memcpy(&task.internal.ArUser.Export_FB.FilePath, &task.internal.ArUser.FilePath, strlen(task.internal.ArUser.FilePath));
-		task.internal.ArUser.Export_FB.Execute = 1;
-		// Run the Export FUB
-		ArUserExport(&task.internal.ArUser.Export_FB);
-		// Check that the FUB is complete
-		if (task.internal.ArUser.Export_FB.Done && !task.internal.ArUser.Export_FB.Busy) {
-			task.internal.ArUser.Export_FB.Execute = 0;
-			task.cmd.exportUsers = 0;
-		} else if (task.internal.ArUser.Export_FB.Error) {
-			task.status.error = 1;
-		}
-		// Reset the command
-		task.cmd.exportUsers = 0;
-	}	
+		// ----------------- AUTHENTICATE USER -----------------
+		// Set execute command
+		task.internal.ArUser.AuthenticatePassword_FB.Execute = 1;
+		// Copy the parsed data to the FUB
+		memcpy(&task.internal.ArUser.AuthenticatePassword_FB.UserName, &task.internal.parsedQuery.data.userName, strlen(task.internal.parsedQuery.data.userName));
+		memcpy(&task.internal.ArUser.AuthenticatePassword_FB.Password, &task.internal.parsedQuery.data.password, strlen(task.internal.parsedQuery.data.password));
+		// Call the FUB
+		ArUserAuthenticatePassword(&task.internal.ArUser.AuthenticatePassword_FB);
 	
-
-
-	// TODO: This is not sending now that it is outside the newRequest if statement
-	// ----------------- SEND RESPONSE WITH USER LEVEL -----------------	
-	// Create JSON String
-	ChopRender((UDINT)&task.internal.sendBuffer.message, (UDINT)&task.internal.sendBuffer.template, sizeof(task.internal.sendBuffer.message),(UDINT)&task.internal.sendBuffer.messageLength);
-	// Send the response
-	task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
-	task.internal.response.pContent = task.internal.sendBuffer.message;
-	task.internal.response.contentLength = strlen(task.internal.sendBuffer.message);
-	task.internal.response.send = 1;
-	task.internal.response.status = LLHTTP_STAT_OK;
+		// Check that the FUB is complete
+		if (task.internal.ArUser.AuthenticatePassword_FB.Done && !task.internal.ArUser.AuthenticatePassword_FB.Busy) {
+			//Stop FUB execution on completion
+			task.internal.ArUser.AuthenticatePassword_FB.Execute = 0;
+		}
+		else if (task.internal.ArUser.AuthenticatePassword_FB.Error) {
+			// Check if the error is due to a non-user
+			if(task.internal.ArUser.AuthenticatePassword_FB.ErrorID == arUSER_ERR_DOES_NOT_EXIST) {
+				// No system error
+				task.internal.ArUser.AuthenticatePassword_FB.Execute = 0;
+			}
+			else {
+				task.status.error = 1;
+			}
+		}
 		
+		// ----------------- GET USER LOGIN LEVEL -----------------
+		if(task.internal.ArUser.AuthenticatePassword_FB.IsAuthentic) { // this is going to be false on FUB next cyclic (when Execut is false)
+			task.status.isAuth = 1;
+			task.internal.loginLvl = ADMIN;
+		}
+		
+		
+		// ----------------- EXPORT USERS (FOR DEBUG) -----------------
+		if(task.cmd.exportUsers) {
+			
+			// Export List of user to File for debugging
+			memcpy(&task.internal.ArUser.Export_FB.FilePath, &task.internal.ArUser.FilePath, strlen(task.internal.ArUser.FilePath));
+			task.internal.ArUser.Export_FB.Execute = 1;
+			// Run the Export FUB
+			ArUserExport(&task.internal.ArUser.Export_FB);
+			// Check that the FUB is complete
+			if (task.internal.ArUser.Export_FB.Done && !task.internal.ArUser.Export_FB.Busy) {
+				task.internal.ArUser.Export_FB.Execute = 0;
+				task.cmd.exportUsers = 0;
+			} else if (task.internal.ArUser.Export_FB.Error) {
+				task.status.error = 1;
+			}
+			// Reset the command
+			task.cmd.exportUsers = 0;
+		}	
+		
+		// ----------------- SEND RESPONSE WITH USER LEVEL -----------------	
+		// Create JSON String
+		ChopRender((UDINT)&task.internal.sendBuffer.message, (UDINT)&task.internal.sendBuffer.template, sizeof(task.internal.sendBuffer.message),(UDINT)&task.internal.sendBuffer.messageLength);
+		// Send the response
+		task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
+		task.internal.response.pContent = task.internal.sendBuffer.message;
+		task.internal.response.contentLength = strlen(task.internal.sendBuffer.message);
+		task.internal.response.send = 1;
+		task.internal.response.status = LLHTTP_STAT_OK;
+		
+		// Reset the command
+		if (task.internal.response.done) { // is this the right check var???
+			task.cmd.processRequest = 0;
+		}
+	}		
 	
 
 } // End cyclic
