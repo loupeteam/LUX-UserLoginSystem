@@ -57,6 +57,7 @@ void _INIT ProgramInit(void)
 	
 	// ----------------- CONFIGURE USERS & ROLES -----------------
 	// Call custom function for User system setup
+	strcpy(&task.internal.ArUser.PropertyName, "Role[1]");
 	
 	 
 	// ----------------- USER LEVEL RESPONSE -----------------

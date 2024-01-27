@@ -36,7 +36,7 @@ TYPE
 				
 		(*User Level Application Vars*)
 		sendBuffer : sendBuffer_typ;
-		loginLvl : loginLvl_enum;
+		loginLvl : STRING[MAX_USER_ITEM_LEN];
 		ArUser : ArUser_typ;
 		
 	END_STRUCT;
@@ -47,12 +47,20 @@ END_TYPE
 TYPE
 	
 	ArUser_typ : 	STRUCT 		
-		HasRole_FB : ArUserHasRole;
-		Export_FB : ArUserExport;
+		
 		AuthenticatePassword_FB : ArUserAuthenticatePassword;
+		InitList_FB : ArUserInitList;
+		DestoryList_FB : ArUserDestroyList;
+		GetFirst_FB : ArUserGetFirst;
+		GetNext_FB : ArUserGetNext;
 		
+		GetProperty_FB : ArUserGetProperty;
+		SetProperty_FB : ArUserSetProperty;
+		PropertyName : STRING[MAX_USER_ITEM_LEN];
 		
+		Export_FB : ArUserExport;
 		FilePath : STRING[MAX_USER_ITEM_LEN] := 'C:/Temp/UserDataExport.txt';
+		
 	END_STRUCT;
 	
 	

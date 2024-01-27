@@ -91,11 +91,103 @@ void _CYCLIC ProgramCyclic(void)
 			}
 		}
 		
-		// ----------------- GET USER LOGIN LEVEL -----------------
-		if(task.internal.ArUser.AuthenticatePassword_FB.IsAuthentic) { // this is going to be false on FUB next cyclic (when Execut is false)
+		// ----------------- GET USER ROLE -----------------
+		if(task.internal.ArUser.AuthenticatePassword_FB.IsAuthentic) { 
 			task.status.isAuth = 1;
-			task.internal.loginLvl = ADMIN;
+			
+			// --- Create a list of the roles for this user ---
+			
+			// Copy the parsed data & desired property to the FUB
+			task.internal.ArUser.InitList_FB.ListType = arUSER_USERROLES;
+			memcpy(&task.internal.ArUser.InitList_FB.ElementName, &task.internal.parsedQuery.data.userName, strlen(task.internal.parsedQuery.data.userName));
+			// Set execute command
+			task.internal.ArUser.InitList_FB.Execute = 1;
+			// Call the FUB
+			ArUserInitList(&task.internal.ArUser.InitList_FB);
+			// Check that the FUB is complete
+			if (task.internal.ArUser.InitList_FB.Done && !task.internal.ArUser.InitList_FB.Busy) {
+				//Stop FUB execution on completion
+				task.internal.ArUser.InitList_FB.Execute = 0;
+			}
+			else if (task.internal.ArUser.InitList_FB.Error) {
+				// Check if the error is due to a non-user
+				if(task.internal.ArUser.InitList_FB.ErrorID == arUSER_ERR_DOES_NOT_EXIST) {
+					// No system error
+					task.internal.ArUser.InitList_FB.Execute = 0;
+				}
+				else {
+					task.status.error = 1;
+				}
+			}
+			
+			// --- Get the first element of the roles list ---
+			
+			// Copy the parsed data & desired property to the FUB
+			task.internal.ArUser.GetFirst_FB.List = task.internal.ArUser.InitList_FB.List;
+			// Set execute command
+			task.internal.ArUser.GetFirst_FB.Execute = 1;
+			// Call the FUB
+			ArUserGetFirst(&task.internal.ArUser.GetFirst_FB);
+			// Check that the FUB is complete
+			if (task.internal.ArUser.GetFirst_FB.Done) {
+				//Stop FUB execution on completion
+				task.internal.ArUser.GetFirst_FB.Execute = 0;
+				// Set the loginLvl to the value of the Role
+				strcpy(&task.internal.loginLvl, &task.internal.ArUser.GetFirst_FB.ElementName);
+			}
+			else if (task.internal.ArUser.GetFirst_FB.Error) {
+				// Check if the error is due to the end of the list
+				if(task.internal.ArUser.GetFirst_FB.ErrorID == arUSER_WRN_END_OF_LIST) {
+					// No system error
+					task.internal.ArUser.GetFirst_FB.Execute = 0;
+				}
+				else {
+					task.status.error = 1;
+				}
+			}
+			
+			// TODO: DestroyList after done
+			
+			//			// --- Get the role property (GetProperty) ---
+			//			/* This isn't working... Results in: 
+			//				arUSER_ERR_DOES_NOT_EXIST	-1070585892
+			//				The element (user, role, user-role assignment) passed to the 
+			//				function block as a parameter does not exist.
+			//				- 
+			//				I think the Property ID would be "Role[1]" However it is encasulated in a 
+			//				Group ID of "Roles" so I cannout get it to output anything. 
+			//				If I replace "Role[1]" with "UserID" (which is not within a parent group)
+			//				it yeilds the expected output.
+			//			*/
+			//
+			//			// Copy the parsed data & desired property to the FUB
+			//			task.internal.ArUser.GetProperty_FB.ElementType = arUSER_USER_PROPERTIES;
+			//			memcpy(&task.internal.ArUser.GetProperty_FB.ElementName, &task.internal.parsedQuery.data.userName, strlen(task.internal.parsedQuery.data.userName));
+			//			memcpy(&task.internal.ArUser.GetProperty_FB.PropertyName, &task.internal.ArUser.PropertyName, strlen(task.internal.ArUser.PropertyName)); // PropertyName is set in the init
+			//			// Set execute command
+			//			task.internal.ArUser.GetProperty_FB.Execute = 1;
+			//			// Call the FUB
+			//			ArUserGetProperty(&task.internal.ArUser.GetProperty_FB);
+			//			
+			//			// Check that the FUB is complete
+			//			if (task.internal.ArUser.GetProperty_FB.Done && !task.internal.ArUser.GetProperty_FB.Busy) {
+			//				//Stop FUB execution on completion
+			//				task.internal.ArUser.GetProperty_FB.Execute = 0;
+			//				strcpy(&task.internal.loginLvl, &task.internal.ArUser.GetProperty_FB.PropertyValue);
+			//			}
+			//			else if (task.internal.ArUser.GetProperty_FB.Error) {
+			//				// Check if the error is due to a non-user
+			//				if(task.internal.ArUser.GetProperty_FB.ErrorID == arUSER_ERR_DOES_NOT_EXIST) {
+			//					// No system error
+			//					task.internal.ArUser.GetProperty_FB.Execute = 0;
+			//				}
+			//				else {
+			//					task.status.error = 1;
+			//				}
+			//			}
+			
 		}
+		
 		
 		
 		// ----------------- EXPORT USERS (FOR DEBUG) -----------------
@@ -129,7 +221,7 @@ void _CYCLIC ProgramCyclic(void)
 		
 		// Reset the command
 		if (task.internal.response.done) { // is this the right check var???
-			task.cmd.processRequest = 0;
+			task.cmd.authRequest = 0;
 		}
 	}		
 	
