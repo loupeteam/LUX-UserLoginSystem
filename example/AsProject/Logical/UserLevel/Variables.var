@@ -1,0 +1,5 @@
+VAR
+	task : Task_typ;
+	(*userName : WSTRING[50] := "admin";
+	password : WSTRING[50] := "test";*)
+END_VAR

@@ -26,7 +26,6 @@
     <Object Type="Library" Language="binary" Description="The AsXml library supports reading and writing of XML files.">AsXml</Object>
     <Object Type="Library" Language="binary" Description="The AsZip library offers compressing archive-support">AsZip</Object>
     <Object Type="Library" Language="binary" Description="The BRSystem library provides the user with a number of system functions for e.g. handling permanent memory, accessing exception information, etc.">brsystem</Object>
-    <Object Type="Library" Language="binary" Description="This library contains function interfaces for IEC 61131-3 conversion functions.">Convert</Object>
     <Object Type="Library" Language="binary" Description="The DataObj library can be used to dynamically create, dynamically delete and copy data objects, etc. ">DataObj</Object>
     <Object Type="Library" Language="binary" Description="The DVFrame library and the frame driver can be used to exchange data with external devices.">dvframe</Object>
     <Object Type="Library" Language="binary" Description="The FileIO library provides function blocks for file handling.">FileIO</Object>

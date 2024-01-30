@@ -21,6 +21,7 @@
     <AutomationRuntime Version="C4.90" />
     <Build GccVersion="6.3.0" PreBuildStep="&quot;$(AS_PROJECT_PATH)\Logical\Infrastructure\RevInfo\getRevInfo.sh&quot;" />
     <DefaultTargetMemory Tasks="UserROM" />
+    <Safety SafetyRelease="0.0" />
     <Transfer SavedOfflineInstallationFolder="" SavedPipDestinationFolder="" SavedRuntimeUtilityCenterPackagePath="" />
     <Vc FirmwareVersion="V4.72.0" />
   </Configuration>
