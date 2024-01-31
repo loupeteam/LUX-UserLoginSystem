@@ -1,18 +1,19 @@
-
 #include <bur/plctypes.h>
-
 #ifdef _DEFAULT_INCLUDES
 	#include <AsDefault.h>
 #endif
 
+/*
+* This file is used to set up the unchanging or initial values needed in the LoginLvlServer task.
+*/
+
+// Create Function prototypes
+void ConfigureUsers();
+
 void _INIT ProgramInit(void)
 {
-	/*
-	* This file is used to set up the unchanging or initial values needed 
-	* in the UserLoginServer cyclic function.
-	*/
-	
-	// Set up the HTTP Server
+	// ----------------- HTTP SERVER -----------------
+	// Set up the HTTP Server FUB Parameters
 	task.internal.server.enable = 1;
 	task.internal.server.https = 0;
 	task.internal.server.numClients = 4;
@@ -20,23 +21,14 @@ void _INIT ProgramInit(void)
 	strcpy(task.internal.server.ipAddress, "127.0.0.1");
 	task.internal.server.bufferSize = 12000;
 	
-	// Set up the HTTP Response
-	task.internal.response.enable = 1;
-	task.internal.response.method = LLHTTP_METHOD_ANY;
-	strcpy(task.internal.response.uri, "/getUserLvl");
-	strcpy(task.internal.sendBuffer.message, "Default Response");
-	task.internal.response.pUserHeader = &task.internal.responseHeader.lines;
-	task.internal.response.numUserHeaders = sizeof(task.internal.responseHeader.lines)/sizeof(task.internal.responseHeader.lines[0]);
-	LLHttpAddHeaderField(&task.internal.responseHeader.lines,26,"Access-Control-Allow-Origin","*");
-
-	
+	// ----------------- DEFAULT HTTP RESPONSE -----------------
+	// Set up default Response for HTTP requests that are NOT to desired/expected uri's
 	task.internal.defaultResponse.method = LLHTTP_METHOD_DEFAULT;
 	strcpy(task.internal.defaultResponse.uri, "**");
 	task.internal.defaultResponse.pUserHeader = &task.internal.responseHeader.lines;
 	task.internal.defaultResponse.numUserHeaders = sizeof(task.internal.responseHeader.lines)/sizeof(task.internal.responseHeader.lines[0]);
-	
 	// Add custom 404 page
-	strcpy(sendBuffer, ""
+	strcpy(task.internal.defaultSendBuffer, ""
 		"<!DOCTYPE html>"
 		"<html lang=\"en\">"
 		"<head>"
@@ -50,23 +42,28 @@ void _INIT ProgramInit(void)
 		"</html>"
 		);
 	
-	// Set app values (from Configuration)
-	if(useConfig) {
-		strcpy(task.internal.user.username, Configuration.user.username);
-		strcpy(task.internal.user.password, Configuration.user.password);
-		strcpy(task.internal.admin.username, Configuration.admin.username);
-		strcpy(task.internal.admin.password, Configuration.admin.password);
-	} else {
-		strcpy(task.internal.user.username, "user");
-		strcpy(task.internal.user.password, "test");
-		strcpy(task.internal.admin.username, "admin");
-		strcpy(task.internal.admin.password, "123test");
-	}
+	// ----------------- CUSTOM HTTP RESPONSE -----------------
+	// Set up Response for HTTP requests that ARE to a specific, expected uri
+	task.internal.response.enable = 1;
+	task.internal.response.method = LLHTTP_METHOD_ANY;
+	strcpy(task.internal.response.uri, "/getUserLvl");
+	strcpy(task.internal.sendBuffer.message, "Default Response");
+	task.internal.response.pUserHeader = &task.internal.responseHeader.lines;
+	task.internal.response.numUserHeaders = sizeof(task.internal.responseHeader.lines)/sizeof(task.internal.responseHeader.lines[0]);
+	LLHttpAddHeaderField(&task.internal.responseHeader.lines,26,"Access-Control-Allow-Origin","*");
 	
+	// ----------------- QUERY PARAMETERS PARSER -----------------
 	// Initialize parser values to default
 	JsmnInit((UDINT)&task.internal.parser);
+	strcpy((UDINT)&task.internal.queryJSON, "");
 	
+	// ----------------- CONFIGURE USERS & ROLES -----------------
+	// Call custom function for User system setup
+	ConfigureUsers();
+	
+	// ----------------- USER LEVEL RESPONSE -----------------
 	// Initialize & complie the Chopper template 
 	strcpy(task.internal.sendBuffer.template.source, "{\"userLevel\":\"{{LLHTTPServ:task.internal.userLvl}}\" }");
 	ChopCompile((UDINT)&task.internal.sendBuffer.template, (UDINT)&task.internal.sendBuffer.template.source);
+	
 }

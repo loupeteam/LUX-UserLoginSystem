@@ -1,5 +1,6 @@
-<?xml version='1.0' encoding='utf-8'?>
-<SwConfiguration xmlns="http://br-automation.co.at/AS/SwConfiguration" CpuAddress="SL1">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio FileVersion="4.9"?>
+<SwConfiguration CpuAddress="SL1" xmlns="http://br-automation.co.at/AS/SwConfiguration">
   <TaskClass Name="Cyclic#1">
     <Task Name="FirstInitP" Source="Infrastructure.FirstInitProg.prg" Memory="UserROM" Language="ANSIC" Debugging="true" />
   </TaskClass>
@@ -9,7 +10,7 @@
     <Task Name="MachineHMI" Source="MachineControl.MachineHMI.prg" Memory="UserROM" Language="IEC" Debugging="true" />
   </TaskClass>
   <TaskClass Name="Cyclic#4">
-    <Task Name="LLHTTPServ" Source="LLHTTPServer.prg" Memory="UserROM" Language="ANSIC" Debugging="true" />
+    <Task Name="LLHTTPServ" Source="LoginLvlServer.prg" Memory="UserROM" Language="ANSIC" Debugging="true" />
   </TaskClass>
   <TaskClass Name="Cyclic#5" />
   <TaskClass Name="Cyclic#6" />
@@ -87,5 +88,6 @@
     <LibraryObject Name="llhttp" Source="Libraries.Loupe.llhttp.lby" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="jsmn_parse" Source="Libraries.Loupe.jsmn_parse.lby" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="chopper" Source="Libraries.Loupe.chopper.lby" Memory="UserROM" Language="Binary" Debugging="true" />
+    <LibraryObject Name="ArUser" Source="Libraries._AS.ArUser.lby" Memory="UserROM" Language="binary" Debugging="true" />
   </Libraries>
 </SwConfiguration>
