@@ -67,7 +67,13 @@ void _INIT ProgramInit(void)
 	
 	// ----------------- CONFIGURE USERS & ROLES -----------------
 	// Call custom function for User system setup
-	ConfigureUsers();
+//	ConfigureUsers();
+	task.internal.MpUser.Login_FB.MpLink = &gUserXLogin;
+	task.internal.MpUser.Login_FB.Enable = 1;
+
+
+	
+	
 	
 	// ----------------- USER LEVEL RESPONSE -----------------
 	// Initialize & complie the Chopper template 

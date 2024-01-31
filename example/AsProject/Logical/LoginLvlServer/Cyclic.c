@@ -40,7 +40,6 @@ void _CYCLIC ProgramCyclic(void)
 		task.cmd.authenticateRequest = 1;
 	}
 	
-	
 	// ----------------- AUTHENTICATE INCOMING REQUEST -----------------
 	switch(task.status.state) {
 		case IDLE:
@@ -81,18 +80,29 @@ void _CYCLIC ProgramCyclic(void)
 			break;
 
 		case GET_LOGIN_LVL:
-				
-			// ----------------- GET USER LEVEL -----------------	
-			//Get return from ArUserAuthenticatePassword
-			// if Authentic
-			// Set User Level - Using ArUserGetProperty
-			// if not 
-			// Set User Level = LOGGED_OUT;
+			// ----------------- GET USER LEVEL -----------------				
 			
-			// ... Temp until MpUser is implemented
-			task.internal.loginLvl = LOGGED_OUT;
+			task.internal.MpUser.Login_FB.Login = 1;
+			brwcsconv(&task.internal.MpUser.Login_FB.UserName, &task.internal.parsedQuery.data.userName, 0);
+			brwcsconv(&task.internal.MpUser.Login_FB.Password, &task.internal.parsedQuery.data.password, 0);
 			
-			task.status.state = RENDER_RESPONSE;
+			// TODO: Fix User not found error - is the string converting to a WSTRING properly? Is there a way to watch this?
+			MpUserXLogin(&task.internal.MpUser.Login_FB);
+			
+			// If the login was succesful - Is this the best way to check for success?
+			if(brwcscmp(&task.internal.MpUser.Login_FB.UserName, &task.internal.MpUser.Login_FB.CurrentUser) == 0) {
+				task.internal.loginLvl = task.internal.MpUser.Login_FB.CurrentLevel;
+				task.status.state = RENDER_RESPONSE;
+			}
+			else if(task.internal.MpUser.Login_FB.Error) {
+				task.internal.loginLvl = 0;
+				task.status.state = ERROR;
+			}
+			
+			// TODO: Set up the Log out sequence (Go to new state?)
+			// task.internal.MpUser.Login_FB.Login = 0;
+			// task.internal.MpUser.Login_FB.Logout = 1;
+			
 			
 			break;
 		
@@ -101,10 +111,10 @@ void _CYCLIC ProgramCyclic(void)
 			// Create JSON String
 			task.internal.chopper_status = ChopRender((UDINT)&task.internal.sendBuffer.message, (UDINT)&task.internal.sendBuffer.template, sizeof(task.internal.sendBuffer.message),(UDINT)&task.internal.sendBuffer.messageLength);
 			
-			// I think this should be within some type of status check
+			// TODO: I think this should be within some type of status check - make sure Chopper is done rendering
 			task.internal.response.send = 1;
-			
 			task.status.state = IDLE;
+			
 			break;
 		
 		case ERROR:

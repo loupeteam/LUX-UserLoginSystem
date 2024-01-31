@@ -36,22 +36,22 @@ TYPE
 		
 		(*User Level Application Vars*)
 		sendBuffer : sendBuffer_typ;
-		loginLvl : loginLvl_enum;
+		loginLvl : DINT;
+		MpUser : MpUser_typ;
 		
 	END_STRUCT;
 	
 END_TYPE
 
-(* ----- Configuration Types ----- *)
+(* ----- User Types ----- *)
 TYPE
-	Configuration_typ : 	STRUCT 
-		user : Configuration_Credential_typ;
-		admin : Configuration_Credential_typ;
+	
+	MpUser_typ : 	STRUCT 		
+		
+		Login_FB : MpUserXLogin;
+		
 	END_STRUCT;
-	Configuration_Credential_typ : 	STRUCT 
-		username : STRING[255];
-		password : STRING[255];
-	END_STRUCT;
+	
 END_TYPE
 
 (* ----- JSON Types ----- *)
@@ -61,8 +61,8 @@ TYPE
 		status : INT;
 	END_STRUCT;
 	parsedQueryData_typ : 	STRUCT 
-		userName : STRING[255];
-		password : STRING[255];
+		userName : STRING[50];
+		password : STRING[50];
 	END_STRUCT;
 	sendBuffer_typ : 	STRUCT 
 		template : Chop_Template_typ;
@@ -72,19 +72,12 @@ TYPE
 END_TYPE
 
 (* ----- Enumerations ----- *)
-TYPE
-	loginLvl_enum : 
-		(
-		LOGGED_OUT,
-		USER,
-		ADMIN
-		);
-	
+TYPE	
 	state_enum : 
 		(
 		IDLE,
 		CONVERT_TO_JSON,
-		PARSE, 
+		PARSE,
 		GET_LOGIN_LVL, 
 		RENDER_RESPONSE, 
 		ERROR
