@@ -1,5 +1,6 @@
 TYPE
 	Task_typ : 	STRUCT 
+		cmd : Task_Command_typ;
 		status : Task_Status_typ;
 		internal : Task_Internal_typ;
 	END_STRUCT;
@@ -7,8 +8,14 @@ END_TYPE
 
 (* ----- Main Task Sturcture ----- *)
 TYPE
+	Task_Command_typ : 	STRUCT 
+		authenticateRequest : BOOL;
+
+	END_STRUCT;
+	
 	Task_Status_typ : 	STRUCT 
 		error : BOOL;
+		state : state_enum;
 	END_STRUCT;
 	
 	Task_Internal_typ : 	STRUCT  (* Information not to be accessed outside this task *)
@@ -25,7 +32,8 @@ TYPE
 		tokens : ARRAY[0..15]OF jsmntok_t;
 		queryJSON : STRING[500];
 		parsedQuery : parsedQuery_typ; 
-				
+		chopper_status : DINT;
+		
 		(*User Level Application Vars*)
 		sendBuffer : sendBuffer_typ;
 		loginLvl : loginLvl_enum;
@@ -70,5 +78,15 @@ TYPE
 		LOGGED_OUT,
 		USER,
 		ADMIN
+		);
+	
+	state_enum : 
+		(
+		IDLE,
+		CONVERT_TO_JSON,
+		PARSE, 
+		GET_LOGIN_LVL, 
+		RENDER_RESPONSE, 
+		ERROR
 		);
 END_TYPE

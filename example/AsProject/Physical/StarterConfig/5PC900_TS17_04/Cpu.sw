@@ -10,7 +10,7 @@
     <Task Name="MachineHMI" Source="MachineControl.MachineHMI.prg" Memory="UserROM" Language="IEC" Debugging="true" />
   </TaskClass>
   <TaskClass Name="Cyclic#4">
-    <Task Name="LLHTTPServ" Source="LoginLvlServer.prg" Memory="UserROM" Language="ANSIC" Debugging="true" />
+    <Task Name="LoginLvlSe" Source="LoginLvlServer.prg" Memory="UserROM" Language="ANSIC" Debugging="true" />
   </TaskClass>
   <TaskClass Name="Cyclic#5" />
   <TaskClass Name="Cyclic#6" />

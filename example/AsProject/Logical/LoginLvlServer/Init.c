@@ -23,6 +23,9 @@ void _INIT ProgramInit(void)
 	
 	// ----------------- DEFAULT HTTP RESPONSE -----------------
 	// Set up default Response for HTTP requests that are NOT to desired/expected uri's
+	task.internal.defaultResponse.enable = 1;
+	task.internal.defaultResponse.pRequest = (UDINT)&task.internal.defaultReceiveBuffer;
+	task.internal.defaultResponse.requestSize = sizeof(task.internal.defaultReceiveBuffer);
 	task.internal.defaultResponse.method = LLHTTP_METHOD_DEFAULT;
 	strcpy(task.internal.defaultResponse.uri, "**");
 	task.internal.defaultResponse.pUserHeader = &task.internal.responseHeader.lines;
@@ -41,6 +44,9 @@ void _INIT ProgramInit(void)
 		"</body>"
 		"</html>"
 		);
+	task.internal.defaultResponse.pContent = (UDINT)&task.internal.defaultSendBuffer;
+	task.internal.defaultResponse.contentLength = strlen(task.internal.defaultSendBuffer);
+	task.internal.defaultResponse.status = LLHTTP_STAT_NotFound;
 	
 	// ----------------- CUSTOM HTTP RESPONSE -----------------
 	// Set up Response for HTTP requests that ARE to a specific, expected uri
@@ -48,6 +54,8 @@ void _INIT ProgramInit(void)
 	task.internal.response.method = LLHTTP_METHOD_ANY;
 	strcpy(task.internal.response.uri, "/getLoginLvl");
 	strcpy(task.internal.sendBuffer.message, "Default Response");
+	task.internal.response.pContent = (UDINT)&task.internal.sendBuffer.message;
+	task.internal.response.contentLength = strlen(task.internal.sendBuffer.message);
 	task.internal.response.pUserHeader = &task.internal.responseHeader.lines;
 	task.internal.response.numUserHeaders = sizeof(task.internal.responseHeader.lines)/sizeof(task.internal.responseHeader.lines[0]);
 	LLHttpAddHeaderField(&task.internal.responseHeader.lines,26,"Access-Control-Allow-Origin","*");
