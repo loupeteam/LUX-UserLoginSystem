@@ -46,7 +46,7 @@ void _INIT ProgramInit(void)
 	// Set up Response for HTTP requests that ARE to a specific, expected uri
 	task.internal.response.enable = 1;
 	task.internal.response.method = LLHTTP_METHOD_ANY;
-	strcpy(task.internal.response.uri, "/getUserLvl");
+	strcpy(task.internal.response.uri, "/getLoginLvl");
 	strcpy(task.internal.sendBuffer.message, "Default Response");
 	task.internal.response.pUserHeader = &task.internal.responseHeader.lines;
 	task.internal.response.numUserHeaders = sizeof(task.internal.responseHeader.lines)/sizeof(task.internal.responseHeader.lines[0]);
@@ -63,7 +63,7 @@ void _INIT ProgramInit(void)
 	
 	// ----------------- USER LEVEL RESPONSE -----------------
 	// Initialize & complie the Chopper template 
-	strcpy(task.internal.sendBuffer.template.source, "{\"userLevel\":\"{{LLHTTPServ:task.internal.userLvl}}\" }");
+	strcpy(task.internal.sendBuffer.template.source, "{\"loginLvl\":\"{{LoginLvlSe:task.internal.loginLvl}}\" }");
 	ChopCompile((UDINT)&task.internal.sendBuffer.template, (UDINT)&task.internal.sendBuffer.template.source);
 	
 }

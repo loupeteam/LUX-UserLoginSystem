@@ -67,7 +67,7 @@ void _CYCLIC ProgramCyclic(void)
 		
 		
 		// ... Temp until ARUser is implemented
-		task.internal.userLvl = LOGGED_OUT;
+		task.internal.loginLvl = LOGGED_OUT;
 	
 
 		// ----------------- SEND RESPONSE WITH USER LEVEL -----------------	

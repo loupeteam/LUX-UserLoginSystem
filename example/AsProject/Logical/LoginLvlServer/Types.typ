@@ -28,7 +28,7 @@ TYPE
 				
 		(*User Level Application Vars*)
 		sendBuffer : sendBuffer_typ;
-		userLvl : userLvl_enum;
+		loginLvl : loginLvl_enum;
 		
 	END_STRUCT;
 	
@@ -65,7 +65,7 @@ END_TYPE
 
 (* ----- Enumerations ----- *)
 TYPE
-	userLvl_enum : 
+	loginLvl_enum : 
 		(
 		LOGGED_OUT,
 		USER,
