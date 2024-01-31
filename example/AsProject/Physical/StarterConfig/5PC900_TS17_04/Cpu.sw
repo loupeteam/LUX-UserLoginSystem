@@ -58,7 +58,6 @@
     <LibraryObject Name="AsXml" Source="Libraries._AS.AsXml.lby" Memory="UserROM" Language="binary" Debugging="true" />
     <LibraryObject Name="AsZip" Source="Libraries._AS.AsZip.lby" Memory="UserROM" Language="binary" Debugging="true" />
     <LibraryObject Name="brsystem" Source="Libraries._AS.brsystem.lby" Memory="UserROM" Language="binary" Debugging="true" />
-    <LibraryObject Name="Convert" Source="Libraries._AS.Convert.lby" Memory="UserROM" Language="binary" Debugging="true" />
     <LibraryObject Name="DataObj" Source="Libraries._AS.DataObj.lby" Memory="UserROM" Language="binary" Debugging="true" />
     <LibraryObject Name="dvframe" Source="Libraries._AS.dvframe.lby" Memory="UserROM" Language="binary" Debugging="true" />
     <LibraryObject Name="FileIO" Source="Libraries._AS.FileIO.lby" Memory="UserROM" Language="binary" Debugging="true" />
@@ -89,5 +88,8 @@
     <LibraryObject Name="jsmn_parse" Source="Libraries.Loupe.jsmn_parse.lby" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="chopper" Source="Libraries.Loupe.chopper.lby" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="ArUser" Source="Libraries._AS.ArUser.lby" Memory="UserROM" Language="binary" Debugging="true" />
+    <LibraryObject Name="MpUserX" Source="Libraries.MpUserX.lby" Memory="UserROM" Language="Binary" Debugging="true" />
+    <LibraryObject Name="MpBase" Source="Libraries.MpBase.lby" Memory="UserROM" Language="Binary" Debugging="true" />
+    <LibraryObject Name="AsIecCon" Source="Libraries._AS.AsIecCon.lby" Memory="UserROM" Language="binary" Debugging="true" />
   </Libraries>
 </SwConfiguration>
