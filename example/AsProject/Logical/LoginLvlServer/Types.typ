@@ -38,6 +38,8 @@ TYPE
 		sendBuffer : sendBuffer_typ;
 		loginLvl : DINT;
 		MpUser : MpUser_typ;
+		convertStatus : UDINT;
+		convertStatusP : UDINT;
 		
 	END_STRUCT;
 	
@@ -58,7 +60,12 @@ END_TYPE
 TYPE
 	parsedQuery_typ : 	STRUCT 
 		data : parsedQueryData_typ;
+		convertedData : convertedData_typ;
 		status : INT;
+	END_STRUCT;
+	convertedData_typ : 	STRUCT 
+		userName : WSTRING[50];
+		password : WSTRING[50];
 	END_STRUCT;
 	parsedQueryData_typ : 	STRUCT 
 		userName : STRING[50];

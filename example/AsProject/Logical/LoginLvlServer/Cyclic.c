@@ -83,8 +83,12 @@ void _CYCLIC ProgramCyclic(void)
 			// ----------------- GET USER LEVEL -----------------				
 			
 			task.internal.MpUser.Login_FB.Login = 1;
-			brwcsconv(&task.internal.MpUser.Login_FB.UserName, &task.internal.parsedQuery.data.userName, 0);
-			brwcsconv(&task.internal.MpUser.Login_FB.Password, &task.internal.parsedQuery.data.password, 0);
+			// Convert data. then pass address to FUB
+			task.internal.convertStatus = brwcsconv(&task.internal.parsedQuery.convertedData.userName, &task.internal.parsedQuery.data.userName, 0);
+			task.internal.convertStatusP = brwcsconv(&task.internal.parsedQuery.convertedData.password, &task.internal.parsedQuery.data.password, 0);
+			
+			task.internal.MpUser.Login_FB.UserName = &task.internal.parsedQuery.convertedData.userName;
+			task.internal.MpUser.Login_FB.Password = &task.internal.parsedQuery.convertedData.password;
 			
 			// TODO: Fix User not found error - is the string converting to a WSTRING properly? Is there a way to watch this?
 			MpUserXLogin(&task.internal.MpUser.Login_FB);
