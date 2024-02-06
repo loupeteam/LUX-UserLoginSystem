@@ -31,10 +31,6 @@ void _CYCLIC ProgramCyclic(void)
 	task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
 	// Check for new Requests on the desired uri
 	if(task.internal.response.newRequest) {
-		// Setup the response
-		task.internal.response.pContent = task.internal.sendBuffer.message;
-		task.internal.response.contentLength = strlen(task.internal.sendBuffer.message); // TODO: strlen or sizeof?
-		task.internal.response.status = LLHTTP_STAT_OK;
 		// Initiate state machine for parsing & accessing login level
 		// TODO: Instead of using a cmd. Add the receiedData to a ringbuffer that will be checked for contents in the IDLE state of the stae machine
 		task.cmd.authenticateRequest = 1;
@@ -115,9 +111,15 @@ void _CYCLIC ProgramCyclic(void)
 			// Create JSON String
 			task.internal.chopper_status = ChopRender((UDINT)&task.internal.sendBuffer.message, (UDINT)&task.internal.sendBuffer.template, sizeof(task.internal.sendBuffer.message),(UDINT)&task.internal.sendBuffer.messageLength);
 			
-			// TODO: I think this should be within some type of status check - make sure Chopper is done rendering
+			// TODO: Make sure Chopper is done rendering (If Error go to Error State)
+			// Else {
+			// Setup the response
+			task.internal.response.pContent = &task.internal.sendBuffer.message;
+			task.internal.response.contentLength = strlen(task.internal.sendBuffer.message); 
+			task.internal.response.status = LLHTTP_STAT_OK; 
 			task.internal.response.send = 1;
-			task.status.state = IDLE;
+			
+			task.status.state = LOGOUT;
 			
 			break;
 		
