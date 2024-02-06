@@ -31,10 +31,8 @@ void _CYCLIC ProgramCyclic(void)
 	task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
 	// Check for new Requests on the desired uri
 	if(task.internal.response.newRequest) {
-		// Initiate state machine for parsing & accessing login level
-		// TODO: Instead of using a cmd. Add the receiedData to a ringbuffer that will be checked for contents in the IDLE state of the stae machine
-		task.cmd.authenticateRequest = 1;
-		// other option: if this is already true respond with "Server busy try again later" 503
+		// Add Request uri (with parameters) to an internall buffer for authentication later
+		BufferAddToBottom((UDINT)&task.internal.receiveBuffer,(UDINT)&task.internal.response.requestHeader.uri);
 	}
 	
 	// ----------------- MAPP USER SYSTEM -----------------
@@ -45,6 +43,9 @@ void _CYCLIC ProgramCyclic(void)
 	// ----------------- STATE MACHINE - AUTHENTICATE INCOMING REQUEST -----------------
 	switch(task.status.state) {
 		case ST_IDLE:
+			// Check the buffer for incomming requests
+			if(task.internal.receiveBuffer.NumberValues > 0) {
+				task.status.state = ST_CONVERT_TO_JSON;
 			}
 			break;
 		
@@ -52,8 +53,23 @@ void _CYCLIC ProgramCyclic(void)
 			// ----------------- QUERY PARAMETERS PARSER -----------------
 			// Reset queryJson string prior to calling the parser
 			memset((UDINT)&task.internal.queryJSON,'\0',sizeof(task.internal.queryJSON));
+			
+			// Get the address of the top of the Buffer
+			task.internal.pTopReceiveBuffer = BufferGetItemAdr((UDINT)&task.internal.receiveBuffer,0,task.internal.pReceiveBufferStatus);
+			// Check that the data is valid
+			if(task.internal.pTopReceiveBuffer != 0) {
+				// Parse the uri and convert to a json string
+				queryToJson(task.internal.pTopReceiveBuffer, &task.internal.queryJSON);
+				// Pop Internal Buffer
+				BufferRemoveTop((UDINT)&task.internal.receiveBuffer);
 				task.status.state = ST_PARSE;
+			}
+			else {
+				// No data in the top of the buffer; Move to an ERROR state
+				task.status.error = 1;
 				task.status.state = ST_LOGIN_ERROR;
+			}
+
 			break;
 		
 		case ST_PARSE:

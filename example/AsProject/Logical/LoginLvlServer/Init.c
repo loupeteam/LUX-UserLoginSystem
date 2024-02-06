@@ -71,8 +71,8 @@ void _INIT ProgramInit(void)
 	task.internal.MpUser.Login_FB.MpLink = &gUserXLogin;
 	task.internal.MpUser.Login_FB.Enable = 1;
 
-
-	
+	// Initialize internal Buffers
+	BufferInit((UDINT)&task.internal.receiveBuffer,MAX_BUFFERED_VALUES,sizeof(task.internal.response.requestHeader.uri));	
 	
 	
 	// ----------------- USER LEVEL RESPONSE -----------------

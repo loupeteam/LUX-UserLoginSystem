@@ -39,6 +39,11 @@ TYPE
 		loginLvl : DINT;
 		MpUser : MpUser_typ;
 		
+		(* Receive Buffer *)
+		receiveBuffer : Buffer_typ;
+		pReceiveBufferStatus : UDINT;
+		pTopReceiveBuffer : UDINT;
+		
 	END_STRUCT;
 	
 END_TYPE
