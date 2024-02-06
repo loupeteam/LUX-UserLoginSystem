@@ -115,7 +115,7 @@ void _CYCLIC ProgramCyclic(void)
 			}
 			else if(task.internal.MpUser.Login_FB.Error) {		
 				// Reset the login Level
-				task.internal.loginLvl = 0;
+				task.internal.loginLvl = task.internal.MpUser.Login_FB.StatusID;
 				
 				task.status.state = ST_LOGIN_ERROR;
 			}			
@@ -158,17 +158,14 @@ void _CYCLIC ProgramCyclic(void)
 
 		case ST_LOGIN_ERROR:
 			
-			if(task.internal.MpUser.Login_FB.StatusID == -1064144896) { // Invalid Password - TODO: This is a const use the enum name
-				// Setup the response
-				strcpy(&task.internal.sendBuffer.message, "Invalid Password. Try again");
-				task.internal.response.pContent = &task.internal.sendBuffer.message;
-				task.internal.response.contentLength = strlen(task.internal.sendBuffer.message); 
-			}
+			// Setup the error response
+			strcpy(&task.internal.sendBuffer.message, "Login Error");
+			task.internal.response.pContent = &task.internal.sendBuffer.message;
+			task.internal.response.contentLength = strlen(task.internal.sendBuffer.message); 
 			task.internal.response.status = LLHTTP_STAT_Unauthorized; 
 			task.internal.response.send = 1;
 			
 			// Set ErrorReset Command
-//			task.internal.MpUser.Login_FB.ErrorReset = 1;
 			if(task.internal.MpUser.Login_FB.Error) {
 				task.internal.MpUser.Login_FB.ErrorReset = 1;
 				task.internal.MpUser.Login_FB.Login = 0;
@@ -181,9 +178,15 @@ void _CYCLIC ProgramCyclic(void)
 			break;
 		
 		case ST_LOGOUT_ERROR:
+
+			// Setup the error response
+			strcpy(&task.internal.sendBuffer.message, "MpUserX Logout Error");
+			task.internal.response.pContent = &task.internal.sendBuffer.message;
+			task.internal.response.contentLength = strlen(task.internal.sendBuffer.message); 
+			task.internal.response.status = LLHTTP_STAT_InternalServerError; 
+			task.internal.response.send = 1;
 			
 			// Set ErrorReset Command
-//			task.internal.MpUser.Login_FB.ErrorReset = 1;
 			if(task.internal.MpUser.Login_FB.Error) {
 				task.internal.MpUser.Login_FB.ErrorReset = 1;
 				task.internal.MpUser.Login_FB.Logout = 0;
