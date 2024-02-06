@@ -81,7 +81,7 @@ void _CYCLIC ProgramCyclic(void)
 				task.status.state = LOGIN;
 			} 
 			else { 
-				task.status.state = ERROR;
+				task.status.state = LOGIN_ERROR;
 			}
 			
 			break;
@@ -108,6 +108,7 @@ void _CYCLIC ProgramCyclic(void)
 				// Reset the login Level
 				task.internal.loginLvl = 0;
 				
+				task.status.state = LOGIN_ERROR;
 			}			
 			
 			break;
@@ -145,11 +146,51 @@ void _CYCLIC ProgramCyclic(void)
 			}
 			
 			break;
+
+		case LOGIN_ERROR:
 			
-			task.status.error = 1;
+			if(task.internal.MpUser.Login_FB.StatusID == -1064144896) { // Invalid Password - TODO: This is a const use the enum name
+				// Setup the response
+				strcpy(&task.internal.sendBuffer.message, "Invalid Password. Try again");
+				task.internal.response.pContent = &task.internal.sendBuffer.message;
+				task.internal.response.contentLength = strlen(task.internal.sendBuffer.message); 
+			}
+			task.internal.response.status = LLHTTP_STAT_Unauthorized; 
+			task.internal.response.send = 1;
+			
+			// Set ErrorReset Command
+//			task.internal.MpUser.Login_FB.ErrorReset = 1;
+			if(task.internal.MpUser.Login_FB.Error) {
+				task.internal.MpUser.Login_FB.ErrorReset = 1;
+				task.internal.MpUser.Login_FB.Login = 0;
+			}
+			else {
+				task.internal.MpUser.Login_FB.ErrorReset = 0;
+				task.status.state = IDLE;
+			}
+			
+			//			task.status.error = 1;
 			break;
 		
+		case LOGOUT_ERROR:
+			// TODO: Send a response on error with a differnt msg and HTTP code
+			
+			// Set ErrorReset Command
+//			task.internal.MpUser.Login_FB.ErrorReset = 1;
+			if(task.internal.MpUser.Login_FB.Error) {
+				task.internal.MpUser.Login_FB.ErrorReset = 1;
+				task.internal.MpUser.Login_FB.Logout = 0;
+			}
+			else {
+				task.internal.MpUser.Login_FB.ErrorReset = 0;
+				task.status.state = IDLE;
+			}
+			
+			//			task.status.error = 1;
+			break;
 	}
-
+	
+	
+	
 } // End cyclic
 

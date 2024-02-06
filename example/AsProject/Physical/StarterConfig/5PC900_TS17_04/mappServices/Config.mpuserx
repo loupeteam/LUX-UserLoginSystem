@@ -2,6 +2,10 @@
 <?AutomationStudio FileVersion="4.9"?>
 <Configuration>
   <Element ID="UserMgmtX" Type="mpuserx">
+    <Group ID="Mgr">
+      <Property ID="LoginAttempts" Value="0" />
+      <Property ID="SignAttempts" Value="0" />
+    </Group>
     <Group ID="ServerSettings">
       <Selector ID="Server">
         <Group ID="AdditionalUserData">
