@@ -20,7 +20,7 @@ void _CYCLIC ProgramCyclic(void)
 	task.internal.defaultResponse.send = task.internal.defaultResponse.send && !task.internal.defaultResponse.done; // Reset after message is sent
 	// Check for new Requests on unexpected uri's
 	if(task.internal.defaultResponse.newRequest) {
-		// Return a default message and 404 error
+		// Return a default message and 404 error (set in init)
 		task.internal.defaultResponse.send = 1;		
 	}
 	
@@ -42,28 +42,21 @@ void _CYCLIC ProgramCyclic(void)
 	MpUserXLogin(&task.internal.MpUser.Login_FB);
 		
 	
-	// ----------------- AUTHENTICATE INCOMING REQUEST -----------------
+	// ----------------- STATE MACHINE - AUTHENTICATE INCOMING REQUEST -----------------
 	switch(task.status.state) {
-		case IDLE:
-			// This is where we would check if there is something in the recieve buffer (ie a newRequest has came in)
-			// instead of using a cmd
-			if(task.cmd.authenticateRequest) {
-				task.cmd.authenticateRequest = 0;
-				task.status.state = CONVERT_TO_JSON;
+		case ST_IDLE:
 			}
 			break;
 		
-		case CONVERT_TO_JSON:
+		case ST_CONVERT_TO_JSON:
 			// ----------------- QUERY PARAMETERS PARSER -----------------
 			// Reset queryJson string prior to calling the parser
 			memset((UDINT)&task.internal.queryJSON,'\0',sizeof(task.internal.queryJSON));
-			// Parse the uri and convert to a json string
-			queryToJson(&task.internal.response.requestHeader.uri, &task.internal.queryJSON);
-			
-			task.status.state = PARSE;
+				task.status.state = ST_PARSE;
+				task.status.state = ST_LOGIN_ERROR;
 			break;
 		
-		case PARSE:
+		case ST_PARSE:
 			// Re-Initialize the parser object
 			task.internal.parser.callback.pFunction = queryCallback;
 			task.internal.parser.callback.pUserData = &task.internal.parsedQuery;
@@ -78,15 +71,15 @@ void _CYCLIC ProgramCyclic(void)
 				brwcsconv(&task.internal.parsedQuery.convertedData.userName, &task.internal.parsedQuery.data.userName, 0);
 				brwcsconv(&task.internal.parsedQuery.convertedData.password, &task.internal.parsedQuery.data.password, 0);
 				
-				task.status.state = LOGIN;
+				task.status.state = ST_LOGIN;
 			} 
 			else { 
-				task.status.state = LOGIN_ERROR;
+				task.status.state = ST_LOGIN_ERROR;
 			}
 			
 			break;
 
-		case LOGIN:
+		case ST_LOGIN:
 						
 			// Set up FUB inputs
 			task.internal.MpUser.Login_FB.Login = 1;
@@ -102,18 +95,18 @@ void _CYCLIC ProgramCyclic(void)
 				// Set the login Level from the User information
 				task.internal.loginLvl = task.internal.MpUser.Login_FB.CurrentLevel;
 				
-				task.status.state = RENDER_RESPONSE;
+				task.status.state = ST_RENDER_RESPONSE;
 			}
 			else if(task.internal.MpUser.Login_FB.Error) {		
 				// Reset the login Level
 				task.internal.loginLvl = 0;
 				
-				task.status.state = LOGIN_ERROR;
+				task.status.state = ST_LOGIN_ERROR;
 			}			
 			
 			break;
 				
-		case RENDER_RESPONSE:
+		case ST_RENDER_RESPONSE:
 			// ----------------- SEND RESPONSE WITH USER LEVEL -----------------	
 			// Create JSON String
 			task.internal.chopper_status = ChopRender((UDINT)&task.internal.sendBuffer.message, (UDINT)&task.internal.sendBuffer.template, sizeof(task.internal.sendBuffer.message),(UDINT)&task.internal.sendBuffer.messageLength);
@@ -126,11 +119,11 @@ void _CYCLIC ProgramCyclic(void)
 			task.internal.response.status = LLHTTP_STAT_OK; 
 			task.internal.response.send = 1;
 			
-			task.status.state = LOGOUT;
+			task.status.state = ST_LOGOUT;
 			
 			break;
 		
-		case LOGOUT:
+		case ST_LOGOUT:
 			
 			// Set up FUB inputs
 			task.internal.MpUser.Login_FB.Login = 0;
@@ -139,15 +132,15 @@ void _CYCLIC ProgramCyclic(void)
 			
 			// If the logout was successful
 			if(task.internal.MpUser.Login_FB.CommandDone && !task.internal.MpUser.Login_FB.CommandBusy) {
-				task.status.state = IDLE;
+				task.status.state = ST_IDLE;
 			}
 			else if(task.internal.MpUser.Login_FB.Error) {
-				task.status.state = LOGOUT_ERROR;
+				task.status.state = ST_LOGOUT_ERROR;
 			}
 			
 			break;
 
-		case LOGIN_ERROR:
+		case ST_LOGIN_ERROR:
 			
 			if(task.internal.MpUser.Login_FB.StatusID == -1064144896) { // Invalid Password - TODO: This is a const use the enum name
 				// Setup the response
@@ -166,14 +159,12 @@ void _CYCLIC ProgramCyclic(void)
 			}
 			else {
 				task.internal.MpUser.Login_FB.ErrorReset = 0;
-				task.status.state = IDLE;
+				task.status.state = ST_IDLE;
 			}
 			
-			//			task.status.error = 1;
 			break;
 		
-		case LOGOUT_ERROR:
-			// TODO: Send a response on error with a differnt msg and HTTP code
+		case ST_LOGOUT_ERROR:
 			
 			// Set ErrorReset Command
 //			task.internal.MpUser.Login_FB.ErrorReset = 1;
@@ -183,11 +174,13 @@ void _CYCLIC ProgramCyclic(void)
 			}
 			else {
 				task.internal.MpUser.Login_FB.ErrorReset = 0;
-				task.status.state = IDLE;
+				task.status.state = ST_IDLE;
 			}
 			
-			//			task.status.error = 1;
 			break;
+		
+		// TODO:Could create a send error msg state or an error reset state. Would limit copied code from login and logout errors (would also allow for other errors)
+		
 	}
 	
 	
