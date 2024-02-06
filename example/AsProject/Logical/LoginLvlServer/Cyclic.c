@@ -34,7 +34,13 @@ void _CYCLIC ProgramCyclic(void)
 		// Initiate state machine for parsing & accessing login level
 		// TODO: Instead of using a cmd. Add the receiedData to a ringbuffer that will be checked for contents in the IDLE state of the stae machine
 		task.cmd.authenticateRequest = 1;
+		// other option: if this is already true respond with "Server busy try again later" 503
 	}
+	
+	// ----------------- MAPP USER SYSTEM -----------------
+	// Call the MpUserXLogin FUB
+	MpUserXLogin(&task.internal.MpUser.Login_FB);
+		
 	
 	// ----------------- AUTHENTICATE INCOMING REQUEST -----------------
 	switch(task.status.state) {
@@ -67,7 +73,12 @@ void _CYCLIC ProgramCyclic(void)
 			task.internal.parsedQuery.status = JsmnParse((UDINT)&task.internal.parser, (UDINT)&task.internal.queryJSON, brsstrlen((UDINT)&task.internal.queryJSON), (UDINT)&task.internal.tokens, sizeof(task.internal.tokens)/sizeof(task.internal.tokens[0]));
 			// Check for parsing errors
 			if(task.internal.parsedQuery.status > 0) {
-				task.status.state = GET_LOGIN_LVL;
+							
+				// Convert json strings to wide strings for use in the Function Block
+				brwcsconv(&task.internal.parsedQuery.convertedData.userName, &task.internal.parsedQuery.data.userName, 0);
+				brwcsconv(&task.internal.parsedQuery.convertedData.password, &task.internal.parsedQuery.data.password, 0);
+				
+				task.status.state = LOGIN;
 			} 
 			else { 
 				task.status.state = ERROR;
@@ -75,37 +86,32 @@ void _CYCLIC ProgramCyclic(void)
 			
 			break;
 
-		case GET_LOGIN_LVL:
-			// ----------------- GET USER LEVEL -----------------				
-			
+		case LOGIN:
+						
+			// Set up FUB inputs
 			task.internal.MpUser.Login_FB.Login = 1;
-			// Convert data. then pass address to FUB
-			task.internal.convertStatus = brwcsconv(&task.internal.parsedQuery.convertedData.userName, &task.internal.parsedQuery.data.userName, 0);
-			task.internal.convertStatusP = brwcsconv(&task.internal.parsedQuery.convertedData.password, &task.internal.parsedQuery.data.password, 0);
-			
+			task.internal.MpUser.Login_FB.Logout = 0;
+			task.internal.MpUser.Login_FB.ErrorReset = 0;
+			// Set up Pointers to Username & password
 			task.internal.MpUser.Login_FB.UserName = &task.internal.parsedQuery.convertedData.userName;
 			task.internal.MpUser.Login_FB.Password = &task.internal.parsedQuery.convertedData.password;
-			
-			// TODO: Fix User not found error - is the string converting to a WSTRING properly? Is there a way to watch this?
-			MpUserXLogin(&task.internal.MpUser.Login_FB);
-			
-			// If the login was succesful - Is this the best way to check for success?
-			if(brwcscmp(&task.internal.MpUser.Login_FB.UserName, &task.internal.MpUser.Login_FB.CurrentUser) == 0) {
+
+			// Check if the login was successful
+			if(task.internal.MpUser.Login_FB.CommandDone && !task.internal.MpUser.Login_FB.CommandBusy) {
+				// ----------------- GET USER LEVEL -----------------	
+				// Set the login Level from the User information
 				task.internal.loginLvl = task.internal.MpUser.Login_FB.CurrentLevel;
+				
 				task.status.state = RENDER_RESPONSE;
 			}
-			else if(task.internal.MpUser.Login_FB.Error) {
+			else if(task.internal.MpUser.Login_FB.Error) {		
+				// Reset the login Level
 				task.internal.loginLvl = 0;
-				task.status.state = ERROR;
-			}
-			
-			// TODO: Set up the Log out sequence (Go to new state?)
-			// task.internal.MpUser.Login_FB.Login = 0;
-			// task.internal.MpUser.Login_FB.Logout = 1;
-			
+				
+			}			
 			
 			break;
-		
+				
 		case RENDER_RESPONSE:
 			// ----------------- SEND RESPONSE WITH USER LEVEL -----------------	
 			// Create JSON String
@@ -123,7 +129,22 @@ void _CYCLIC ProgramCyclic(void)
 			
 			break;
 		
-		case ERROR:
+		case LOGOUT:
+			
+			// Set up FUB inputs
+			task.internal.MpUser.Login_FB.Login = 0;
+			task.internal.MpUser.Login_FB.Logout = 1;
+			task.internal.MpUser.Login_FB.ErrorReset = 0;
+			
+			// If the logout was successful
+			if(task.internal.MpUser.Login_FB.CommandDone && !task.internal.MpUser.Login_FB.CommandBusy) {
+				task.status.state = IDLE;
+			}
+			else if(task.internal.MpUser.Login_FB.Error) {
+				task.status.state = LOGOUT_ERROR;
+			}
+			
+			break;
 			
 			task.status.error = 1;
 			break;

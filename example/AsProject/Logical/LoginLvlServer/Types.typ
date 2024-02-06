@@ -38,8 +38,6 @@ TYPE
 		sendBuffer : sendBuffer_typ;
 		loginLvl : DINT;
 		MpUser : MpUser_typ;
-		convertStatus : UDINT;
-		convertStatusP : UDINT;
 		
 	END_STRUCT;
 	
@@ -59,17 +57,17 @@ END_TYPE
 (* ----- JSON Types ----- *)
 TYPE
 	parsedQuery_typ : 	STRUCT 
-		data : parsedQueryData_typ;
-		convertedData : convertedData_typ;
+		data : parsedQueryData_typ; (* username & password stored as strings - returned from JSMN Parse *)
+		convertedData : convertedData_typ; (* username & password stored as WIDE strings - converted using brwcsconv *)
 		status : INT;
-	END_STRUCT;
-	convertedData_typ : 	STRUCT 
-		userName : WSTRING[50];
-		password : WSTRING[50];
 	END_STRUCT;
 	parsedQueryData_typ : 	STRUCT 
 		userName : STRING[50];
 		password : STRING[50];
+	END_STRUCT;
+	convertedData_typ : 	STRUCT 
+		userName : WSTRING[50];
+		password : WSTRING[50];
 	END_STRUCT;
 	sendBuffer_typ : 	STRUCT 
 		template : Chop_Template_typ;
@@ -85,8 +83,8 @@ TYPE
 		IDLE,
 		CONVERT_TO_JSON,
 		PARSE,
-		GET_LOGIN_LVL, 
+		LOGIN, 
 		RENDER_RESPONSE, 
-		ERROR
+		LOGOUT,
 		);
 END_TYPE
