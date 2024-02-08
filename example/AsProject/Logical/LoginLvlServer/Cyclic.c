@@ -8,13 +8,8 @@ unsigned long queryCallback(parsedQueryData_typ* data, jsmn_callback_data* callb
 unsigned long queryToJson(UDINT* requestUri, UDINT* queryJSON);
 
 void _CYCLIC ProgramCyclic(void)
-{
-
-
-	
+{	
 	// ----------------- DEFAULT HTTP RESPONSE -----------------
-	task.internal.defaultResponse.ident = task.internal.server.ident;
-	task.internal.defaultResponse.send = task.internal.defaultResponse.send && !task.internal.defaultResponse.done; // Reset after message is sent
 	// Check for new Requests on unexpected uri's
 	if(task.internal.defaultResponse.newRequest) {
 		// Return a default message and 404 error (set in init)
@@ -22,16 +17,11 @@ void _CYCLIC ProgramCyclic(void)
 	}
 	
 	// ----------------- CUSTOM HTTP RESPONSE -----------------
-	task.internal.response.ident = task.internal.server.ident;
-	task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
 	// Check for new Requests on the desired uri
 	if(task.internal.response.newRequest) {
 		// Add Request uri (with parameters) to an internall buffer for authentication later
 		BufferAddToBottom((UDINT)&task.internal.receiveBuffer,(UDINT)&task.internal.response.requestHeader.uri);
 	}
-	
-	// ----------------- MAPP USER SYSTEM -----------------
-		
 	
 	// ----------------- STATE MACHINE - AUTHENTICATE INCOMING REQUEST -----------------
 	switch(task.status.state) {
@@ -92,26 +82,29 @@ void _CYCLIC ProgramCyclic(void)
 						
 			// Set up FUB inputs
 			task.internal.MpUser.Login_FB.Login = 1;
-			task.internal.MpUser.Login_FB.Logout = 0;
-			task.internal.MpUser.Login_FB.ErrorReset = 0;
-			// Set up Pointers to Username & password
-			task.internal.MpUser.Login_FB.UserName = &task.internal.parsedQuery.convertedData.userName;
-			task.internal.MpUser.Login_FB.Password = &task.internal.parsedQuery.convertedData.password;
-
+			//			task.internal.MpUser.Login_FB.Logout = 0;
+			//			task.internal.MpUser.Login_FB.ErrorReset = 0;
+			
 			// Check if the login was successful
-			if(task.internal.MpUser.Login_FB.CommandDone && !task.internal.MpUser.Login_FB.CommandBusy) {
+			if(task.internal.MpUser.Login_FB.CommandDone) {
 				// ----------------- GET USER LEVEL -----------------	
 				// Set the login Level from the User information
 				task.internal.loginLvl = task.internal.MpUser.Login_FB.CurrentLevel;
-				
+				task.internal.MpUser.Login_FB.Login = 0;
 				task.status.state = ST_RENDER_RESPONSE;
 			}
 			else if(task.internal.MpUser.Login_FB.Error) {		
 				// Reset the login Level
-				task.internal.loginLvl = task.internal.MpUser.Login_FB.StatusID;
+				//				task.internal.loginLvl = task.internal.MpUser.Login_FB.StatusID;
+				task.internal.loginLvl = 0;
 				
 				task.status.state = ST_LOGIN_ERROR;
 			}			
+			else if(!task.internal.MpUser.Login_FB.CommandBusy) {
+				// Set up Pointers to Username & password
+				task.internal.MpUser.Login_FB.UserName = &task.internal.parsedQuery.convertedData.userName;
+				task.internal.MpUser.Login_FB.Password = &task.internal.parsedQuery.convertedData.password;
+			}
 			
 			break;
 				
@@ -122,25 +115,40 @@ void _CYCLIC ProgramCyclic(void)
 			
 			// TODO: Make sure Chopper is done rendering (If Error go to Error State)
 			// Else {
-			// Setup the response
-			task.internal.response.pContent = &task.internal.sendBuffer.message;
-			task.internal.response.contentLength = strlen(task.internal.sendBuffer.message); 
-			task.internal.response.status = LLHTTP_STAT_OK; 
-			task.internal.response.send = 1;
+			task.status.state = ST_SEND_RESPONSE;
 			
-			task.status.state = ST_LOGOUT;
+			break;
+		
+		case ST_SEND_RESPONSE:
 			
+			// Check the status of the response fub
+			if(task.internal.response.done) {
+				task.internal.response.send = 0;
+				task.status.state = ST_LOGOUT;
+			}
+			else if(task.internal.response.error) {
+				task.status.state = ST_LOGIN_ERROR;
+			}
+			else if(!task.internal.response.busy) {
+				// Setup the response
+				task.internal.response.pContent = &task.internal.sendBuffer.message;
+				task.internal.response.contentLength = strlen(task.internal.sendBuffer.message); 
+				task.internal.response.status = LLHTTP_STAT_OK; 
+				task.internal.response.send = 1;
+			}
+				
 			break;
 		
 		case ST_LOGOUT:
 			
 			// Set up FUB inputs
-			task.internal.MpUser.Login_FB.Login = 0;
+			//			task.internal.MpUser.Login_FB.Login = 0;
 			task.internal.MpUser.Login_FB.Logout = 1;
-			task.internal.MpUser.Login_FB.ErrorReset = 0;
+			//			task.internal.MpUser.Login_FB.ErrorReset = 0;
 			
 			// If the logout was successful
-			if(task.internal.MpUser.Login_FB.CommandDone && !task.internal.MpUser.Login_FB.CommandBusy) {
+			if(task.internal.MpUser.Login_FB.CommandDone) {
+				task.internal.MpUser.Login_FB.Logout = 0;	
 				task.status.state = ST_IDLE;
 			}
 			else if(task.internal.MpUser.Login_FB.Error) {
@@ -161,10 +169,10 @@ void _CYCLIC ProgramCyclic(void)
 			// Set ErrorReset Command
 			if(task.internal.MpUser.Login_FB.Error) {
 				task.internal.MpUser.Login_FB.ErrorReset = 1;
-				task.internal.MpUser.Login_FB.Login = 0;
+				//				task.internal.MpUser.Login_FB.Login = 0;
 			}
 			else {
-				task.internal.MpUser.Login_FB.ErrorReset = 0;
+				//				task.internal.MpUser.Login_FB.ErrorReset = 0;
 				task.status.state = ST_IDLE;
 			}
 			
@@ -182,10 +190,10 @@ void _CYCLIC ProgramCyclic(void)
 			// Set ErrorReset Command
 			if(task.internal.MpUser.Login_FB.Error) {
 				task.internal.MpUser.Login_FB.ErrorReset = 1;
-				task.internal.MpUser.Login_FB.Logout = 0;
+				//				task.internal.MpUser.Login_FB.Logout = 0;
 			}
 			else {
-				task.internal.MpUser.Login_FB.ErrorReset = 0;
+				//				task.internal.MpUser.Login_FB.ErrorReset = 0;
 				task.status.state = ST_IDLE;
 			}
 			
@@ -198,12 +206,26 @@ void _CYCLIC ProgramCyclic(void)
 	// ----------------- CALL FUNCTION BLOCKS -----------------
 	// Call the HTTP Server FUB
 	LLHttpServer((UDINT)&task.internal.server);
+	
+		
+	// ----------------- DEFAULT HTTP RESPONSE -----------------
+	task.internal.defaultResponse.ident = task.internal.server.ident;
+	task.internal.defaultResponse.send = task.internal.defaultResponse.send && !task.internal.defaultResponse.done; // Reset after message is sent
 	// Call the HTTP Response FUB on the defaultResponse
 	LLHttpResponse(&task.internal.defaultResponse);
+	
+	// ----------------- CUSTOM HTTP RESPONSE -----------------
+	task.internal.response.ident = task.internal.server.ident;
+	task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
 	// Call the HTTP Response FUB on the Response
 	LLHttpResponse((UDINT)&task.internal.response);	
+
+	// ----------------- MAPP USER SYSTEM -----------------
 	// Call the MpUserXLogin FUB
 	MpUserXLogin(&task.internal.MpUser.Login_FB);
+	task.internal.MpUser.Login_FB.Login = 0;
+	task.internal.MpUser.Login_FB.Logout = 0;
+	task.internal.MpUser.Login_FB.ErrorReset = 0;
 		
 	
 } // End cyclic
