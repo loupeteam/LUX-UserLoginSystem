@@ -41,7 +41,7 @@ TYPE
 		
 		(* Receive Buffer *)
 		receiveBuffer : Buffer_typ;
-		pReceiveBufferStatus : UDINT;
+		ReceiveBufferStatus : UINT;
 		pTopReceiveBuffer : UDINT;
 		
 	END_STRUCT;

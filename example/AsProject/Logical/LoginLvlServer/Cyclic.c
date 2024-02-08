@@ -9,14 +9,11 @@ unsigned long queryToJson(UDINT* requestUri, UDINT* queryJSON);
 
 void _CYCLIC ProgramCyclic(void)
 {
-	// ----------------- HTTP SERVER -----------------
-	// Call the HTTP Server FUB
-	LLHttpServer((UDINT)&task.internal.server);
+
+
 	
 	// ----------------- DEFAULT HTTP RESPONSE -----------------
 	task.internal.defaultResponse.ident = task.internal.server.ident;
-	// Call the HTTP Response FUB on the defaultResponse
-	LLHttpResponse(&task.internal.defaultResponse);
 	task.internal.defaultResponse.send = task.internal.defaultResponse.send && !task.internal.defaultResponse.done; // Reset after message is sent
 	// Check for new Requests on unexpected uri's
 	if(task.internal.defaultResponse.newRequest) {
@@ -26,8 +23,6 @@ void _CYCLIC ProgramCyclic(void)
 	
 	// ----------------- CUSTOM HTTP RESPONSE -----------------
 	task.internal.response.ident = task.internal.server.ident;
-	// Call the HTTP Response FUB on the Response
-	LLHttpResponse((UDINT)&task.internal.response);
 	task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
 	// Check for new Requests on the desired uri
 	if(task.internal.response.newRequest) {
@@ -36,8 +31,6 @@ void _CYCLIC ProgramCyclic(void)
 	}
 	
 	// ----------------- MAPP USER SYSTEM -----------------
-	// Call the MpUserXLogin FUB
-	MpUserXLogin(&task.internal.MpUser.Login_FB);
 		
 	
 	// ----------------- STATE MACHINE - AUTHENTICATE INCOMING REQUEST -----------------
@@ -55,7 +48,7 @@ void _CYCLIC ProgramCyclic(void)
 			memset((UDINT)&task.internal.queryJSON,'\0',sizeof(task.internal.queryJSON));
 			
 			// Get the address of the top of the Buffer
-			task.internal.pTopReceiveBuffer = BufferGetItemAdr((UDINT)&task.internal.receiveBuffer,0,task.internal.pReceiveBufferStatus);
+			task.internal.pTopReceiveBuffer = BufferGetItemAdr((UDINT)&task.internal.receiveBuffer,0,&task.internal.ReceiveBufferStatus);
 			// Check that the data is valid
 			if(task.internal.pTopReceiveBuffer != 0) {
 				// Parse the uri and convert to a json string
@@ -202,7 +195,16 @@ void _CYCLIC ProgramCyclic(void)
 		
 	}
 	
-	
+	// ----------------- CALL FUNCTION BLOCKS -----------------
+	// Call the HTTP Server FUB
+	LLHttpServer((UDINT)&task.internal.server);
+	// Call the HTTP Response FUB on the defaultResponse
+	LLHttpResponse(&task.internal.defaultResponse);
+	// Call the HTTP Response FUB on the Response
+	LLHttpResponse((UDINT)&task.internal.response);	
+	// Call the MpUserXLogin FUB
+	MpUserXLogin(&task.internal.MpUser.Login_FB);
+		
 	
 } // End cyclic
 
