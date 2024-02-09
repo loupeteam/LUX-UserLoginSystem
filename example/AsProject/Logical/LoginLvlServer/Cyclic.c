@@ -82,9 +82,7 @@ void _CYCLIC ProgramCyclic(void)
 						
 			// Set up FUB inputs
 			task.internal.MpUser.Login_FB.Login = 1;
-			//			task.internal.MpUser.Login_FB.Logout = 0;
-			//			task.internal.MpUser.Login_FB.ErrorReset = 0;
-			
+
 			// Check if the login was successful
 			if(task.internal.MpUser.Login_FB.CommandDone) {
 				// ----------------- GET USER LEVEL -----------------	
@@ -95,9 +93,7 @@ void _CYCLIC ProgramCyclic(void)
 			}
 			else if(task.internal.MpUser.Login_FB.Error) {		
 				// Reset the login Level
-				//				task.internal.loginLvl = task.internal.MpUser.Login_FB.StatusID;
 				task.internal.loginLvl = 0;
-				
 				task.status.state = ST_LOGIN_ERROR;
 			}			
 			else if(!task.internal.MpUser.Login_FB.CommandBusy) {
@@ -142,10 +138,8 @@ void _CYCLIC ProgramCyclic(void)
 		case ST_LOGOUT:
 			
 			// Set up FUB inputs
-			//			task.internal.MpUser.Login_FB.Login = 0;
 			task.internal.MpUser.Login_FB.Logout = 1;
-			//			task.internal.MpUser.Login_FB.ErrorReset = 0;
-			
+
 			// If the logout was successful
 			if(task.internal.MpUser.Login_FB.CommandDone) {
 				task.internal.MpUser.Login_FB.Logout = 0;	
@@ -169,10 +163,8 @@ void _CYCLIC ProgramCyclic(void)
 			// Set ErrorReset Command
 			if(task.internal.MpUser.Login_FB.Error) {
 				task.internal.MpUser.Login_FB.ErrorReset = 1;
-				//				task.internal.MpUser.Login_FB.Login = 0;
 			}
 			else {
-				//				task.internal.MpUser.Login_FB.ErrorReset = 0;
 				task.status.state = ST_IDLE;
 			}
 			
@@ -190,16 +182,14 @@ void _CYCLIC ProgramCyclic(void)
 			// Set ErrorReset Command
 			if(task.internal.MpUser.Login_FB.Error) {
 				task.internal.MpUser.Login_FB.ErrorReset = 1;
-				//				task.internal.MpUser.Login_FB.Logout = 0;
 			}
 			else {
-				//				task.internal.MpUser.Login_FB.ErrorReset = 0;
 				task.status.state = ST_IDLE;
 			}
 			
 			break;
 		
-		// TODO:Could create a send error msg state or an error reset state. Would limit copied code from login and logout errors (would also allow for other errors)
+		// TODO: Could create a send error msg state or an error reset state. Would limit copied code from login and logout errors (would also allow for other errors)
 		
 	}
 	

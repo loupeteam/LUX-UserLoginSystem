@@ -7,9 +7,6 @@
 * This file is used to set up the unchanging or initial values needed in the LoginLvlServer task.
 */
 
-// Create Function prototypes
-void ConfigureUsers();
-
 void _INIT ProgramInit(void)
 {
 	// ----------------- HTTP SERVER -----------------
@@ -67,7 +64,6 @@ void _INIT ProgramInit(void)
 	
 	// ----------------- CONFIGURE USERS & ROLES -----------------
 	// Call custom function for User system setup
-//	ConfigureUsers();
 	task.internal.MpUser.Login_FB.MpLink = &gUserXLogin;
 	task.internal.MpUser.Login_FB.Enable = 1;
 
