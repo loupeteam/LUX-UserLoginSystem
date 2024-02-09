@@ -109,9 +109,13 @@ void _CYCLIC ProgramCyclic(void)
 			// Create JSON String
 			task.internal.chopper_status = ChopRender((UDINT)&task.internal.sendBuffer.message, (UDINT)&task.internal.sendBuffer.template, sizeof(task.internal.sendBuffer.message),(UDINT)&task.internal.sendBuffer.messageLength);
 			
-			// TODO: Make sure Chopper is done rendering (If Error go to Error State)
-			// Else {
-			task.status.state = ST_SEND_RESPONSE;
+			// Check for errors runnning Chopper
+			if(task.internal.chopper_status != 0) {
+				task.status.state = ST_LOGIN_ERROR;
+			}
+			else {
+				task.status.state = ST_SEND_RESPONSE;
+			}
 			
 			break;
 		
