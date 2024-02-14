@@ -26,7 +26,7 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
 }
 
 // Function will get executed on click of submit button 
-$(document).on('click', '#submitButton', function(e) {
+export function SubmitForm(e) {
     e.preventDefault();
 
     let scope = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
@@ -38,9 +38,13 @@ $(document).on('click', '#submitButton', function(e) {
     let username = !loginUser.value ? " " : loginUser.value;
     let password = !loginPass.value ? " " : loginPass.value;
 
+    // For debug
+    // console.log("User: ", username)
+    // console.log("Password: ", password)
+
     // Call the default login function    
     DefaultLogin("http://127.0.0.1:1238/getUserLvl", username, password)
-});
+};
  
 
 export function TmplitLogin(context, args) {
@@ -103,7 +107,7 @@ export function TmplitLogin(context, args) {
                         <label for="loginPass">Password</label>
                           <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
                       </div>
-                      <button type="submit" id="submitButton" class="btn btn-default">Submit</button>
+                      <button type="submit" class="btn btn-default" onclick="SubmitForm(event)">Submit</button>
                     </form>
                     
                 </div>
