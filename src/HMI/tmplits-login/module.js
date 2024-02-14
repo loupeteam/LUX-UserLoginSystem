@@ -9,21 +9,6 @@ import * as util from "../tmplits-utilities/module.js"
 
 export function DefaultLogin(url, username, password) { // TODO: Maybe named something more cryptic
 
-
-
-    // -------------- Using XMLHttpRequest----------------------
-    // let request = new XMLHttpRequest();
-
-    // //TODO: Post allows for a body, but do we really want post? Prolly not..
-    // request.open('POST', url, true);    
-    // request.onload = function () {
-    //     // Begin accessing JSON data here
-    //     var data = JSON.parse(this.response);
-    //     machine.setUserLevel(data.userLevel);
-    // }
-    // request.send(JSON.stringify({username:username, password:password}));
-    // -------------- Using XMLHttpRequest----------------------
-
 fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
     method: 'GET',
     }).then((response) => {
@@ -43,9 +28,16 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
 // Function will get executed on click of submit button 
 $(document).on('click', '#submitButton', function(e) {
     e.preventDefault();
+
+    let scope = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
     // Get the username and password from the form
-    let username = $('#loginUser').val();
-    let password = $('#loginPass').val();
+    let loginUser = scope.querySelector('.lui-loginUser');
+    let loginPass = scope.querySelector('.lui-loginPass');
+    
+    // If form value is empty set the vars to single character strings (for PLC object to contain something)
+    let username = !loginUser.value ? " " : loginUser.value;
+    let password = !loginPass.value ? " " : loginPass.value;
+
     // Call the default login function    
     DefaultLogin("http://127.0.0.1:1238/getUserLvl", username, password)
 });
@@ -102,14 +94,14 @@ export function TmplitLogin(context, args) {
                 <!-- Modal Body -->
                 <div class="modal-body">
                     
-                    <form role="form" id="formID" action=''>
+                    <form role="form" class="lui-login-scope" action=''>
                       <div class="form-group">
                         <label for="loginUser">Username</label>
-                        <input type="text" class="form-control lui-loginUser" placeholder="Username" id="loginUser"/>
+                        <input type="text" class="form-control lui-loginUser" placeholder="Username"/>
                       </div>
                       <div class="form-group">
                         <label for="loginPass">Password</label>
-                          <input type="password" class="form-control lui-loginPass" placeholder="Password" id="loginPass"/>
+                          <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
                       </div>
                       <button type="submit" id="submitButton" class="btn btn-default">Submit</button>
                     </form>
