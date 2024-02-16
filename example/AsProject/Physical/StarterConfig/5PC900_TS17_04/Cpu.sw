@@ -35,8 +35,8 @@
     <BinaryObject Name="arconfig" Source="" Memory="SystemROM" Language="Binary" />
     <BinaryObject Name="iomap" Source="" Memory="UserROM" Language="Binary" />
     <BinaryObject Name="Role" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="Config_1" Source="" Memory="UserROM" Language="Binary" />
-    <BinaryObject Name="Config" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="XLoginCnfg" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="UsrXConfig" Source="" Memory="UserROM" Language="Binary" />
   </Binaries>
   <Libraries>
     <LibraryObject Name="ArEventLog" Source="Libraries._AS.ArEventLog.lby" Memory="UserROM" Language="binary" Debugging="true" />
