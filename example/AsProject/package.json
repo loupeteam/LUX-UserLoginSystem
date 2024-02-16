@@ -17,6 +17,7 @@
     "@loupeteam/luxprog": "^0.2.0",
     "@loupeteam/piperprog": "^0.1.1",
     "@loupeteam/revinfoprog": "^2.2.0",
+    "@loupeteam/ringbuflib": "^0.2.4",
     "@loupeteam/starterasproject49": "^1.0.0"
   },
   "lpmConfig": {

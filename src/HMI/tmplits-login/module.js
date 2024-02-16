@@ -7,12 +7,15 @@
 // Define your tmplit functions here and export them to make them globally available
 import * as util from "../tmplits-utilities/module.js"
 
+
 export function DefaultLogin(url, username, password) { // TODO: Maybe named something more cryptic
 
 fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
     method: 'GET',
+    signal: signal
     }).then((response) => {
         if (response.ok) {
+            
             return response.json();
         } else {
             throw new Error('Something went wrong');
