@@ -8,24 +8,7 @@
 import * as util from "../tmplits-utilities/module.js"
 
 
-
 export function DefaultLogin(url, username, password) { // TODO: Maybe named something more cryptic
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-
-    // -------------- Using XMLHttpRequest----------------------
-    // let request = new XMLHttpRequest();
-
-    // //TODO: Post allows for a body, but do we really want post? Prolly not..
-    // request.open('POST', url, true);    
-    // request.onload = function () {
-    //     // Begin accessing JSON data here
-    //     var data = JSON.parse(this.response);
-    //     machine.setUserLevel(data.userLevel);
-    // }
-    // request.send(JSON.stringify({username:username, password:password}));
-    // -------------- Using XMLHttpRequest----------------------
 
 fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
     method: 'GET',
