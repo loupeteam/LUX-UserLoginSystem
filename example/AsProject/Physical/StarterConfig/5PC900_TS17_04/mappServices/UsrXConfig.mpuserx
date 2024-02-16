@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio FileVersion="4.9"?>
+<Configuration>
+  <Element ID="UserMgmtX" Type="mpuserx">
+    <Group ID="Mgr">
+      <Property ID="LoginAttempts" Value="0" />
+      <Property ID="SignAttempts" Value="0" />
+    </Group>
+    <Group ID="ServerSettings">
+      <Selector ID="Server">
+        <Group ID="AdditionalUserData">
+          <Property ID="[0]" Value="mail" />
+          <Property ID="[1]" Value="telephoneNumber" />
+        </Group>
+      </Selector>
+    </Group>
+    <Group ID="Users">
+      <Group ID="DefUser#1">
+        <Property ID="id" Value="admin" />
+      </Group>
+      <Group ID="DefUser#2">
+        <Property ID="id" Value="user" />
+      </Group>
+    </Group>
+    <Group ID="Groups">
+      <Group ID="DefGroup#1">
+        <Property ID="id" Value="Administrator" />
+        <Property ID="level" Value="100" />
+        <Property ID="admin" Value="TRUE" />
+      </Group>
+      <Group ID="DefGroup#2">
+        <Property ID="id" Value="Operator" />
+      </Group>
+    </Group>
+  </Element>
+</Configuration>

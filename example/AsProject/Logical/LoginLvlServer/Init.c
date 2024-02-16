@@ -7,9 +7,6 @@
 * This file is used to set up the unchanging or initial values needed in the LoginLvlServer task.
 */
 
-// Create Function prototypes
-void ConfigureUsers();
-
 void _INIT ProgramInit(void)
 {
 	// ----------------- HTTP SERVER -----------------
@@ -23,6 +20,9 @@ void _INIT ProgramInit(void)
 	
 	// ----------------- DEFAULT HTTP RESPONSE -----------------
 	// Set up default Response for HTTP requests that are NOT to desired/expected uri's
+	task.internal.defaultResponse.enable = 1;
+	task.internal.defaultResponse.pRequest = (UDINT)&task.internal.defaultReceiveBuffer;
+	task.internal.defaultResponse.requestSize = sizeof(task.internal.defaultReceiveBuffer);
 	task.internal.defaultResponse.method = LLHTTP_METHOD_DEFAULT;
 	strcpy(task.internal.defaultResponse.uri, "**");
 	task.internal.defaultResponse.pUserHeader = &task.internal.responseHeader.lines;
@@ -41,13 +41,18 @@ void _INIT ProgramInit(void)
 		"</body>"
 		"</html>"
 		);
+	task.internal.defaultResponse.pContent = (UDINT)&task.internal.defaultSendBuffer;
+	task.internal.defaultResponse.contentLength = strlen(task.internal.defaultSendBuffer);
+	task.internal.defaultResponse.status = LLHTTP_STAT_NotFound;
 	
 	// ----------------- CUSTOM HTTP RESPONSE -----------------
 	// Set up Response for HTTP requests that ARE to a specific, expected uri
 	task.internal.response.enable = 1;
 	task.internal.response.method = LLHTTP_METHOD_ANY;
-	strcpy(task.internal.response.uri, "/getUserLvl");
+	strcpy(task.internal.response.uri, "/getLoginLvl");
 	strcpy(task.internal.sendBuffer.message, "Default Response");
+	task.internal.response.pContent = (UDINT)&task.internal.sendBuffer.message;
+	task.internal.response.contentLength = strlen(task.internal.sendBuffer.message);
 	task.internal.response.pUserHeader = &task.internal.responseHeader.lines;
 	task.internal.response.numUserHeaders = sizeof(task.internal.responseHeader.lines)/sizeof(task.internal.responseHeader.lines[0]);
 	LLHttpAddHeaderField(&task.internal.responseHeader.lines,26,"Access-Control-Allow-Origin","*");
@@ -59,11 +64,16 @@ void _INIT ProgramInit(void)
 	
 	// ----------------- CONFIGURE USERS & ROLES -----------------
 	// Call custom function for User system setup
-	ConfigureUsers();
+	task.internal.MpUser.Login_FB.MpLink = &gUserXLogin;
+	task.internal.MpUser.Login_FB.Enable = 1;
+
+	// Initialize internal Buffers
+	BufferInit((UDINT)&task.internal.receiveBuffer,MAX_BUFFERED_VALUES,sizeof(task.internal.response.requestHeader.uri));	
+	
 	
 	// ----------------- USER LEVEL RESPONSE -----------------
 	// Initialize & complie the Chopper template 
-	strcpy(task.internal.sendBuffer.template.source, "{\"userLevel\":\"{{LLHTTPServ:task.internal.userLvl}}\" }");
+	strcpy(task.internal.sendBuffer.template.source, "{\"loginLvl\":\"{{LoginLvlSe:task.internal.loginLvl}}\" }");
 	ChopCompile((UDINT)&task.internal.sendBuffer.template, (UDINT)&task.internal.sendBuffer.template.source);
 	
 }

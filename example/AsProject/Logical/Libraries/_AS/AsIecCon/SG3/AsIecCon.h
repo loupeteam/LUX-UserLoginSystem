@@ -1,7 +1,7 @@
 /* Automation Studio Generated Header File, Format Version 1.00 */
 /* do not change */
-#ifndef CONVERT_H_
-#define CONVERT_H_
+#ifndef ASIECCON_H_
+#define ASIECCON_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,5 +45,5 @@ float swapREAL(float IN);
 #ifdef __cplusplus
 };
 #endif
-#endif /* CONVERT_H_ */
+#endif /* ASIECCON_H_ */
 

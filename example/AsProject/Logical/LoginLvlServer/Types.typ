@@ -1,5 +1,6 @@
 TYPE
 	Task_typ : 	STRUCT 
+		cmd : Task_Command_typ;
 		status : Task_Status_typ;
 		internal : Task_Internal_typ;
 	END_STRUCT;
@@ -7,8 +8,14 @@ END_TYPE
 
 (* ----- Main Task Sturcture ----- *)
 TYPE
+	Task_Command_typ : 	STRUCT 
+		authenticateRequest : BOOL;
+
+	END_STRUCT;
+	
 	Task_Status_typ : 	STRUCT 
 		error : BOOL;
+		state : state_enum;
 	END_STRUCT;
 	
 	Task_Internal_typ : 	STRUCT  (* Information not to be accessed outside this task *)
@@ -25,36 +32,47 @@ TYPE
 		tokens : ARRAY[0..15]OF jsmntok_t;
 		queryJSON : STRING[500];
 		parsedQuery : parsedQuery_typ; 
-				
+		chopper_status : DINT;
+		
 		(*User Level Application Vars*)
 		sendBuffer : sendBuffer_typ;
-		userLvl : userLvl_enum;
+		loginLvl : DINT;
+		MpUser : MpUser_typ;
+		
+		(* Receive Buffer *)
+		receiveBuffer : Buffer_typ;
+		ReceiveBufferStatus : UINT;
+		pTopReceiveBuffer : UDINT;
 		
 	END_STRUCT;
 	
 END_TYPE
 
-(* ----- Configuration Types ----- *)
+(* ----- User Types ----- *)
 TYPE
-	Configuration_typ : 	STRUCT 
-		user : Configuration_Credential_typ;
-		admin : Configuration_Credential_typ;
+	
+	MpUser_typ : 	STRUCT 		
+		
+		Login_FB : MpUserXLogin;
+		
 	END_STRUCT;
-	Configuration_Credential_typ : 	STRUCT 
-		username : STRING[255];
-		password : STRING[255];
-	END_STRUCT;
+	
 END_TYPE
 
 (* ----- JSON Types ----- *)
 TYPE
 	parsedQuery_typ : 	STRUCT 
-		data : parsedQueryData_typ;
+		data : parsedQueryData_typ; (* username & password stored as strings - returned from JSMN Parse *)
+		convertedData : convertedData_typ; (* username & password stored as WIDE strings - converted using brwcsconv *)
 		status : INT;
 	END_STRUCT;
 	parsedQueryData_typ : 	STRUCT 
-		userName : STRING[255];
-		password : STRING[255];
+		userName : STRING[50];
+		password : STRING[50];
+	END_STRUCT;
+	convertedData_typ : 	STRUCT 
+		userName : WSTRING[50];
+		password : WSTRING[50];
 	END_STRUCT;
 	sendBuffer_typ : 	STRUCT 
 		template : Chop_Template_typ;
@@ -63,12 +81,19 @@ TYPE
 	END_STRUCT;
 END_TYPE
 
+
 (* ----- Enumerations ----- *)
-TYPE
-	userLvl_enum : 
+TYPE	
+	state_enum : 
 		(
-		LOGGED_OUT,
-		USER,
-		ADMIN
+		ST_IDLE,
+		ST_CONVERT_TO_JSON,
+		ST_PARSE,
+		ST_LOGIN, 
+		ST_RENDER_RESPONSE, 
+		ST_SEND_RESPONSE,
+		ST_LOGOUT,
+		ST_LOGIN_ERROR,
+		ST_LOGOUT_ERROR
 		);
 END_TYPE

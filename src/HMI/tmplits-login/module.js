@@ -7,27 +7,15 @@
 // Define your tmplit functions here and export them to make them globally available
 import * as util from "../tmplits-utilities/module.js"
 
+
 export function DefaultLogin(url, username, password) { // TODO: Maybe named something more cryptic
-
-
-
-    // -------------- Using XMLHttpRequest----------------------
-    // let request = new XMLHttpRequest();
-
-    // //TODO: Post allows for a body, but do we really want post? Prolly not..
-    // request.open('POST', url, true);    
-    // request.onload = function () {
-    //     // Begin accessing JSON data here
-    //     var data = JSON.parse(this.response);
-    //     machine.setUserLevel(data.userLevel);
-    // }
-    // request.send(JSON.stringify({username:username, password:password}));
-    // -------------- Using XMLHttpRequest----------------------
 
 fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
     method: 'GET',
+    signal: signal
     }).then((response) => {
         if (response.ok) {
+            
             return response.json();
         } else {
             throw new Error('Something went wrong');
@@ -44,10 +32,21 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
 $(document).on('click', '#submitButton', function(e) {
     e.preventDefault();
     // Get the username and password from the form
-    let username = $('#loginUser').val();
-    let password = $('#loginPass').val();
+    let username;
+    let password;
+
+    if(!$('#loginUser').val()){
+        username = " ";
+    }else {
+        username = $('#loginUser').val()
+    }
+    if(!$('#loginPass').val()){
+        password = " ";
+    }else {
+        password = $('#loginPass').val()
+    }
     // Call the default login function    
-    DefaultLogin("http://127.0.0.1:1238/getUserLvl", username, password)
+    DefaultLogin("http://127.0.0.1:1238/getLoginLvl", username, password)
 });
  
 
