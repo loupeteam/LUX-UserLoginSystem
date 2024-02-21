@@ -11,8 +11,7 @@ import * as util from "../tmplits-utilities/module.js"
 export function DefaultLogin(url, username, password) { // TODO: Maybe named something more cryptic
 
 fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
-    method: 'GET',
-    signal: signal
+    method: 'GET'
     }).then((response) => {
         if (response.ok) {
             
@@ -47,7 +46,7 @@ export function SubmitForm(e) {
     // console.log("Password: ", password)
 
     // Call the default login function    
-    DefaultLogin("http://127.0.0.1:1238/getUserLvl", username, password)
+    DefaultLogin("http://127.0.0.1:1238/getLoginLvl", username, password)
 };
  
 export function OpenModal(e) {
