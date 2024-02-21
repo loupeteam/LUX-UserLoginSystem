@@ -88,8 +88,6 @@ export function TmplitLogin(context, args) {
     
     // TODO: Add support if user has passed in a PV (immediatly setUserPV)
 
-    
-    // TODO: onClick of Logout button set user level to 0 
 
     return ` 
         <div class="lui-login-scope" >
@@ -98,7 +96,7 @@ export function TmplitLogin(context, args) {
             Login
         </button>
 
-        <button class="btn btn-primary" min-user-level-unlock="1">
+        <button class="btn btn-primary lui-logoutBtn" min-user-level-unlock="1" onclick="machine.setUserLevel(0);">
             Log Out
         </button>
         
