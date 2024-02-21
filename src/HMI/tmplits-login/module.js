@@ -20,7 +20,8 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
             throw new Error('Something went wrong');
         }
     }).then((data) => {
-        // TODO: Set UserLvlPV
+        // Set machine user level
+        machine.setUserLevel(data.loginLvl);
         console.log(data);
     })
     .catch((error) => {
