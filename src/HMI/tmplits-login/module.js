@@ -11,8 +11,7 @@ import * as util from "../tmplits-utilities/module.js"
 export function DefaultLogin(url, username, password) { // TODO: Maybe named something more cryptic
 
 fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
-    method: 'GET',
-    signal: signal
+    method: 'GET'
     }).then((response) => {
         if (response.ok) {
             
@@ -21,7 +20,8 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
             throw new Error('Something went wrong');
         }
     }).then((data) => {
-        // TODO: Set UserLvlPV
+        // Set machine user level
+        machine.setUserLevel(data.loginLvl);
         console.log(data);
     })
     .catch((error) => {
@@ -47,7 +47,7 @@ export function SubmitForm(e) {
     // console.log("Password: ", password)
 
     // Call the default login function    
-    DefaultLogin("http://127.0.0.1:1238/getUserLvl", username, password)
+    DefaultLogin("http://127.0.0.1:1238/getLoginLvl", username, password)
 };
  
 export function OpenModal(e) {
@@ -88,8 +88,6 @@ export function TmplitLogin(context, args) {
     
     // TODO: Add support if user has passed in a PV (immediatly setUserPV)
 
-    
-    // TODO: onClick of Logout button set user level to 0 
 
     return ` 
         <div class="lui-login-scope" >
@@ -98,7 +96,7 @@ export function TmplitLogin(context, args) {
             Login
         </button>
 
-        <button class="btn btn-primary" min-user-level-unlock="1">
+        <button class="btn btn-primary lui-logoutBtn" min-user-level-unlock="1" onclick="machine.setUserLevel(0);">
             Log Out
         </button>
         
