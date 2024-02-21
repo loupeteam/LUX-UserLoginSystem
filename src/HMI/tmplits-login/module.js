@@ -21,6 +21,7 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
             throw new Error('Something went wrong');
         }
     }).then((data) => {
+        // TODO: Set UserLvlPV
         console.log(data);
     })
     .catch((error) => {
@@ -29,26 +30,45 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
 }
 
 // Function will get executed on click of submit button 
-$(document).on('click', '#submitButton', function(e) {
+export function SubmitForm(e) {
     e.preventDefault();
-    // Get the username and password from the form
-    let username;
-    let password;
 
-    if(!$('#loginUser').val()){
-        username = " ";
-    }else {
-        username = $('#loginUser').val()
-    }
-    if(!$('#loginPass').val()){
-        password = " ";
-    }else {
-        password = $('#loginPass').val()
-    }
+    let scope = e.target.classList.contains('lui-loginForm') ? e.target : e.target.closest('.lui-loginForm');
+    // Get the username and password from the form
+    let loginUser = scope.querySelector('.lui-loginUser');
+    let loginPass = scope.querySelector('.lui-loginPass');
+    
+    // If form value is empty set the vars to single character strings (for PLC object to contain something)
+    let username = !loginUser.value ? " " : loginUser.value;
+    let password = !loginPass.value ? " " : loginPass.value;
+
+    // For debug
+    // console.log("User: ", username)
+    // console.log("Password: ", password)
+
     // Call the default login function    
-    DefaultLogin("http://127.0.0.1:1238/getLoginLvl", username, password)
-});
+    DefaultLogin("http://127.0.0.1:1238/getUserLvl", username, password)
+};
  
+export function OpenModal(e) {
+    e.preventDefault();
+    // Find the scope for this tmplit instance
+    let scope = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
+    // Get the modal element within the scope
+    let modal = scope.querySelector('.lui-loginModal');
+    modal.classList.add("show");
+    
+};
+
+export function CloseModal(e) {
+    e.preventDefault();
+    // Find the scope for this tmplit instance
+    let scope = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
+    // Get the modal element within the scope
+    let modal = scope.querySelector('.lui-loginModal');
+    modal.classList.remove("show");
+    
+};
 
 export function TmplitLogin(context, args) {
 
@@ -65,59 +85,60 @@ export function TmplitLogin(context, args) {
         attr                    // convert everything else to a single attribute string for later use (join, string interpolation)
     } = util.cleanArgs(_args)
 
-
+    
     // TODO: Add support if user has passed in a PV (immediatly setUserPV)
 
-
+    
     // TODO: onClick of Logout button set user level to 0 
 
     return ` 
-    <!-- Modal Trigger-->
-    <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal">
-        Login
-    </button>
+        <div class="lui-login-scope" >
+        <!-- Modal Trigger-->
+        <button class="btn btn-primary lui-loginBtn" onclick="OpenModal(event)">
+            Login
+        </button>
 
-    <button class="btn btn-primary" min-user-level-unlock="1">
-        Log Out
-    </button>
-    
-    <!-- Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <button class="btn btn-primary" min-user-level-unlock="1">
+            Log Out
+        </button>
         
-        <div class="modal-dialog">
-            <div class="modal-content">
-                
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">
-                           <span aria-hidden="true">&times;</span>
-                           <span class="sr-only">Close</span>
-                    </button>
-                    <h4 class="modal-title" id="loginModalLabel">
-                        HMI Login Level
-                    </h4>
-                </div>
-                
-                <!-- Modal Body -->
-                <div class="modal-body">
+        <!-- Modal -->
+           <div class="modal lui-loginModal">                     
+            <div class="modal-dialog">                    
+                <div class="modal-content">
                     
-                    <form role="form" id="formID" action=''>
-                      <div class="form-group">
-                        <label for="loginUser">Username</label>
-                        <input type="text" class="form-control lui-loginUser" placeholder="Username" id="loginUser"/>
-                      </div>
-                      <div class="form-group">
-                        <label for="loginPass">Password</label>
-                          <input type="password" class="form-control lui-loginPass" placeholder="Password" id="loginPass"/>
-                      </div>
-                      <button type="submit" id="submitButton" class="btn btn-default">Submit</button>
-                    </form>
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close" onclick="CloseModal(event)">
+                            <span>&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title">
+                            HMI Login
+                        </h4>
+                    </div>
                     
-                </div>
-                
-                <!-- Modal Footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"> Close </button>
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        
+                        <form role="form" class="lui-loginForm" action=''>
+                        <div class="form-group">
+                            <label for="loginUser">Username</label>
+                            <input type="text" class="form-control lui-loginUser" placeholder="Username"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPass">Password</label>
+                            <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
+                        </div>
+                        <button type="submit" class="btn btn-default" onclick="SubmitForm(event)">Submit</button>
+                        </form>
+                        
+                    </div>
+                    
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" onclick="CloseModal(event)"> Close </button>
+                    </div>
                 </div>
             </div>
         </div>
