@@ -76,6 +76,16 @@ export function CloseModal(e) {
     modal.classList.remove("show");
     
 };
+export function Logout(e) {
+    e.preventDefault();
+    // Find the scope for the overall tmplit instance
+    let scopeLogin = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
+    let localMachineName = scopeLogin.getAttribute('data-machine-name') // localMachineName is the string assigned to the dataMachineName js var via aliasing with the data-machine-name attribute
+    let localMachine = window[localMachineName] //returns the golbal variable object with the same name as the string stored in localMachineName
+    // Reset machine user level
+    localMachine.setUserLevel(0);
+    
+};
 
 export function TmplitLogin(context, args) {
 
@@ -104,7 +114,7 @@ export function TmplitLogin(context, args) {
             Login
         </button>
 
-        <button class="btn btn-primary lui-logoutBtn" min-user-level-unlock="1" onclick="machine.setUserLevel(0);">
+        <button class="btn btn-primary lui-logoutBtn" min-user-level-unlock="1" onclick="Logout(event)">
             Log Out
         </button>
         
