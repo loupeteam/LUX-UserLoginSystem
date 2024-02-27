@@ -47,11 +47,14 @@ export function SubmitForm(e) {
 
     // Find the scope for the overall tmplit instance
     let scopeLogin = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
+    // Get the machine from the scope
     let localMachineName = scopeLogin.getAttribute('data-machine-name') // localMachineName is the string assigned to the dataMachineName js var via aliasing with the data-machine-name attribute
     let localMachine = window[localMachineName] //returns the golbal variable object with the same name as the string stored in localMachineName
-       
+    // Get the server ip from the scope
+    let localLoginServerIp = scopeLogin.getAttribute('data-server-ip') // localLoginServerIp is the string assigned to the LoginServerIp js var via aliasing with the data-server-ip attribute
+    
     // Call the default login function with a callback function   
-    DefaultLogin("http://127.0.0.1:1238/getLoginLvl", username, password,(level)=>{
+    DefaultLogin("http://"+ localLoginServerIp + ":1238/getLoginLvl", username, password,(level)=>{
         // Set machine user level from response           
         localMachine.setUserLevel(level);
     }) // Define the callback using a Closure to allow for lexical scoping
@@ -94,6 +97,7 @@ export function TmplitLogin(context, args) {
         onLogin = 'DefaultLogin', 
         userlevelPV,
         ['data-machine-name']:dataMachineName = "machine", // dataMachineName can be passed from the user using the alias 'data-machine-name' or assigned the default string here
+        ['data-server-ip']:loginServerIp = "127.0.0.1",
         ..._args
     } = args.hash //_args now does NOT include the extracted vars
 
@@ -108,7 +112,7 @@ export function TmplitLogin(context, args) {
 
 
     return ` 
-        <div class="lui-login-scope" data-machine-name=${dataMachineName} >
+        <div class="lui-login-scope" data-machine-name=${dataMachineName} data-server-ip=${loginServerIp} >
         <!-- Modal Trigger-->
         <button class="btn btn-primary lui-loginBtn" onclick="OpenModal(event)">
             Login
