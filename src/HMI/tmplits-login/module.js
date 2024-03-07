@@ -8,20 +8,22 @@
 import * as util from "../tmplits-utilities/module.js"
 
 
-export function DefaultLogin(url, username, password) { // TODO: Maybe named something more cryptic
+export function DefaultLogin(url, username, password, onSuccess) { 
+// this is the object thtat the method is owned by
 
 fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
-    method: 'GET',
-    signal: signal
+    method: 'GET'
     }).then((response) => {
         if (response.ok) {
-            
             return response.json();
         } else {
             throw new Error('Something went wrong');
         }
     }).then((data) => {
-        // TODO: Set UserLvlPV
+        if(typeof onSuccess === "function") { // TODO: test with and without passing in an onSuccess callback function
+            // Callback function for successfull http response
+            onSuccess(data.loginLvl); 
+        }
         console.log(data);
     })
     .catch((error) => {
@@ -33,21 +35,29 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
 export function SubmitForm(e) {
     e.preventDefault();
 
-    let scope = e.target.classList.contains('lui-loginForm') ? e.target : e.target.closest('.lui-loginForm');
+    // Find the scope for this form instance
+    let scopeForm = e.target.classList.contains('lui-loginForm') ? e.target : e.target.closest('.lui-loginForm');
     // Get the username and password from the form
-    let loginUser = scope.querySelector('.lui-loginUser');
-    let loginPass = scope.querySelector('.lui-loginPass');
+    let loginUser = scopeForm.querySelector('.lui-loginUser');
+    let loginPass = scopeForm.querySelector('.lui-loginPass');
     
     // If form value is empty set the vars to single character strings (for PLC object to contain something)
     let username = !loginUser.value ? " " : loginUser.value;
     let password = !loginPass.value ? " " : loginPass.value;
 
-    // For debug
-    // console.log("User: ", username)
-    // console.log("Password: ", password)
-
-    // Call the default login function    
-    DefaultLogin("http://127.0.0.1:1238/getUserLvl", username, password)
+    // Find the scope for the overall tmplit instance
+    let scopeLogin = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
+    // Get the machine from the scope
+    let localMachineName = scopeLogin.getAttribute('data-machine-name') // localMachineName is the string assigned to the dataMachineName js var via aliasing with the data-machine-name attribute
+    let localMachine = window[localMachineName] //returns the golbal variable object with the same name as the string stored in localMachineName
+    // Get the server ip from the scope
+    let localLoginServerIp = scopeLogin.getAttribute('data-server-ip') // localLoginServerIp is the string assigned to the LoginServerIp js var via aliasing with the data-server-ip attribute
+    
+    // Call the default login function with a callback function   
+    DefaultLogin("http://"+ localLoginServerIp + ":1238/getLoginLvl", username, password,(level)=>{
+        // Set machine user level from response           
+        localMachine.setUserLevel(level);
+    }) // Define the callback using a Closure to allow for lexical scoping
 };
  
 export function OpenModal(e) {
@@ -69,36 +79,46 @@ export function CloseModal(e) {
     modal.classList.remove("show");
     
 };
+export function Logout(e) {
+    e.preventDefault();
+    // Find the scope for the overall tmplit instance
+    let scopeLogin = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
+    let localMachineName = scopeLogin.getAttribute('data-machine-name') // localMachineName is the string assigned to the dataMachineName js var via aliasing with the data-machine-name attribute
+    let localMachine = window[localMachineName] //returns the golbal variable object with the same name as the string stored in localMachineName
+    // Reset machine user level
+    localMachine.setUserLevel(0);
+    
+};
 
 export function TmplitLogin(context, args) {
 
     // Extract the most important args and apply default values if not specified by user
     let { 
         onLogin = 'DefaultLogin', 
-        userlevelPV, 
+        userlevelPV,
+        ['data-machine-name']:dataMachineName = "machine", // dataMachineName can be passed from the user using the alias 'data-machine-name' or assigned the default string here
+        ['data-server-ip']:loginServerIp = "127.0.0.1",
         ..._args
     } = args.hash //_args now does NOT include the extracted vars
 
-    //Get cleaned up values from args
+    // Get cleaned up values from args
     let {
         classList,              // convert any class attributes to classList (array of strings)
         attr                    // convert everything else to a single attribute string for later use (join, string interpolation)
     } = util.cleanArgs(_args)
+ 
 
-    
     // TODO: Add support if user has passed in a PV (immediatly setUserPV)
 
-    
-    // TODO: onClick of Logout button set user level to 0 
 
     return ` 
-        <div class="lui-login-scope" >
+        <div class="lui-login-scope" data-machine-name=${dataMachineName} data-server-ip=${loginServerIp} >
         <!-- Modal Trigger-->
         <button class="btn btn-primary lui-loginBtn" onclick="OpenModal(event)">
             Login
         </button>
 
-        <button class="btn btn-primary" min-user-level-unlock="1">
+        <button class="btn btn-primary lui-logoutBtn" min-user-level-unlock="1" onclick="Logout(event)">
             Log Out
         </button>
         
