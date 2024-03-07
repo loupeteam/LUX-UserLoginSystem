@@ -9,28 +9,7 @@ unsigned long queryToJson(UDINT* requestUri, UDINT* queryJSON);
 
 void _CYCLIC ProgramCyclic(void)
 {	
-	// ----------------- DEFAULT HTTP RESPONSE -----------------
-	// Check for new Requests on unexpected uri's
-	if(task.internal.defaultResponse.newRequest) {
-		// Return a default message and 404 error (set in init)
-		task.internal.defaultResponse.send = 1;		
-	}
-	
-	// ----------------- CUSTOM HTTP RESPONSE -----------------
-	// Check for new Requests on the desired uri
-	if(task.internal.response.newRequest) {
-		// Add Request uri (with parameters) to an internall buffer for authentication later
-		BufferAddToBottom((UDINT)&task.internal.receiveBuffer,(UDINT)&task.internal.response.requestHeader.uri);
-	}
-	
-	// ----------------- STATE MACHINE - AUTHENTICATE INCOMING REQUEST -----------------
-	switch(task.status.state) {
-		case ST_IDLE:
-			// Check the buffer for incomming requests
-			if(task.internal.receiveBuffer.NumberValues > 0) {
-				task.status.state = ST_CONVERT_TO_JSON;
-			}
-			break;
+	// Set the run status to enter the loop each CPU cycle
 		
 		case ST_CONVERT_TO_JSON:
 			// ----------------- QUERY PARAMETERS PARSER -----------------
@@ -207,19 +186,23 @@ void _CYCLIC ProgramCyclic(void)
 	task.internal.defaultResponse.send = task.internal.defaultResponse.send && !task.internal.defaultResponse.done; // Reset after message is sent
 	// Call the HTTP Response FUB on the defaultResponse
 	LLHttpResponse(&task.internal.defaultResponse);
+	// Check for new Requests on unexpected uri's
+	if(task.internal.defaultResponse.newRequest) {
+		// Return a default message and 404 error (set in init)
+		task.internal.defaultResponse.send = 1;		
+	}
 	
 	// ----------------- CUSTOM HTTP RESPONSE -----------------
 	task.internal.response.ident = task.internal.server.ident;
 	task.internal.response.send = task.internal.response.send && !task.internal.response.done; // Reset after message is sent
 	// Call the HTTP Response FUB on the Response
-	LLHttpResponse((UDINT)&task.internal.response);	
-
-	// ----------------- MAPP USER SYSTEM -----------------
-	// Call the MpUserXLogin FUB
-	MpUserXLogin(&task.internal.MpUser.Login_FB);
-	task.internal.MpUser.Login_FB.Login = 0;
-	task.internal.MpUser.Login_FB.Logout = 0;
-	task.internal.MpUser.Login_FB.ErrorReset = 0;
+	LLHttpResponse((UDINT)&task.internal.response);
+	task.internal.response.send = 0;
+	// Check for new Requests on the desired uri
+	if(task.internal.response.newRequest) {
+		// Add Request uri (with parameters) to an internall buffer for authentication later
+		BufferAddToBottom((UDINT)&task.internal.receiveBuffer,(UDINT)&task.internal.response.requestHeader.uri);
+	}
 		
 	
 } // End cyclic
