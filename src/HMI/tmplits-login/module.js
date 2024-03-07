@@ -94,8 +94,7 @@ export function TmplitLogin(context, args) {
 
     // Extract the most important args and apply default values if not specified by user
     let { 
-        onLogin = 'DefaultLogin', 
-        userlevelPV,
+        userlevelPV, // TODO: Add support if user has passed in a PV (immediatly setUserPV)
         ['data-machine-name']:dataMachineName = "machine", // dataMachineName can be passed from the user using the alias 'data-machine-name' or assigned the default string here
         ['data-server-ip']:loginServerIp = "127.0.0.1",
         ..._args
@@ -108,7 +107,7 @@ export function TmplitLogin(context, args) {
     } = util.cleanArgs(_args)
  
 
-    // TODO: Add support if user has passed in a PV (immediatly setUserPV)
+    
 
 
     return `
