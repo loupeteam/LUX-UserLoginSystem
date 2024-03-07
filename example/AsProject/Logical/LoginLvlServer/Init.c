@@ -11,6 +11,7 @@ void _INIT ProgramInit(void)
 {
 	// ----------------- HTTP SERVER -----------------
 	// Set up the HTTP Server FUB Parameters
+	// TODO: Make Port and IP address configurable
 	task.internal.server.enable = 1;
 	task.internal.server.https = 0;
 	task.internal.server.numClients = 4;
