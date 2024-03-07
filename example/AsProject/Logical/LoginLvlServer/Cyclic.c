@@ -44,6 +44,7 @@ void _CYCLIC ProgramCyclic(void)
 				else {
 					// No data in the top of the buffer; Move to an ERROR state
 					task.status.error = 1;
+					task.status.state = ST_ERROR_RESPONSE;
 					break;
 				}
 			
@@ -68,6 +69,7 @@ void _CYCLIC ProgramCyclic(void)
 				else {
 					// No parsed data output from Jsmn
 					task.status.error = 1;
+					task.status.state = ST_ERROR_RESPONSE;
 					break;
 				}
 			
@@ -85,6 +87,7 @@ void _CYCLIC ProgramCyclic(void)
 				else if(task.internal.MpUser.Login_FB.Error) {		
 					// Reset the login Level
 					task.internal.loginLvl = 0;
+					task.status.state = ST_ERROR_RESPONSE;
 					break;
 				}			
 				else if(!task.internal.MpUser.Login_FB.CommandBusy) {
@@ -109,6 +112,7 @@ void _CYCLIC ProgramCyclic(void)
 			
 				// Check for errors from Chopper
 				if(task.internal.chopper_status != 0) {
+					task.status.state = ST_ERROR_RESPONSE;
 					break;
 				}
 				else {
@@ -154,6 +158,7 @@ void _CYCLIC ProgramCyclic(void)
 				
 			// no break
 
+			case ST_ERROR_RESPONSE:
 			
 				// Setup the error response
 				strcpy(&task.internal.sendBuffer.message, "Login Error");
