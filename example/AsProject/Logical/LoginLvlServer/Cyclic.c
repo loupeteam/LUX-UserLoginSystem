@@ -76,6 +76,8 @@ void _CYCLIC ProgramCyclic(void)
 			// no break
 
 			case ST_LOGIN:
+				// Set up FUB inputs
+				task.internal.MpUser.Login_FB.Login = 1;
 				
 				// Check if the login was successful
 				if(task.internal.MpUser.Login_FB.CommandDone) {
@@ -94,8 +96,6 @@ void _CYCLIC ProgramCyclic(void)
 					// Set up Pointers to Username & password
 					task.internal.MpUser.Login_FB.UserName = &task.internal.parsedQuery.convertedData.userName;
 					task.internal.MpUser.Login_FB.Password = &task.internal.parsedQuery.convertedData.password;
-					// Set up FUB inputs
-					task.internal.MpUser.Login_FB.Login = 1;
 					break;
 				}
 				else { 
