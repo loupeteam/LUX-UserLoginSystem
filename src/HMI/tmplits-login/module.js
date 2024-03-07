@@ -153,7 +153,7 @@ export function TmplitLogin(context, args) {
                             <label for="loginPass">Password</label>
                             <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
                         </div>
-                        <button type="submit" class="btn btn-default" onclick="TmplitLoginSubmitForm(event)">Submit</button>
+                        <button type="submit" class="btn btn-default" onclick="TmplitLoginSubmitForm(event)">Login</button>
                         </form>
                         
                     </div>
