@@ -1,6 +1,5 @@
 TYPE
 	Task_typ : 	STRUCT 
-		cmd : Task_Command_typ;
 		status : Task_Status_typ;
 		internal : Task_Internal_typ;
 	END_STRUCT;
@@ -8,10 +7,6 @@ END_TYPE
 
 (* ----- Main Task Sturcture ----- *)
 TYPE
-	Task_Command_typ : 	STRUCT 
-		authenticateRequest : BOOL;
-
-	END_STRUCT;
 	
 	Task_Status_typ : 	STRUCT 
 		error : BOOL;
