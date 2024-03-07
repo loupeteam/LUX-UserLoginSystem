@@ -114,12 +114,16 @@ export function TmplitLogin(context, args) {
         <div class="lui-login-scope" data-machine-name=${dataMachineName} data-server-ip=${loginServerIp} >
         <!-- Modal Trigger-->
         <button class="btn btn-primary lui-loginBtn" onclick="TmplitLoginOpenModal(event)">
+            <l  min-user-level-show="1">
+                Change
+            </l>
             Login
         </button>
-
+        
         <button class="btn btn-primary lui-logoutBtn" min-user-level-unlock="1" onclick="TmplitLoginLogoutBtn(event)">
             Log Out
         </button>
+
         
         <!-- Modal -->
            <div class="modal lui-loginModal">                     
