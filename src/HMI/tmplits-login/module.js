@@ -8,7 +8,7 @@
 import * as util from "../tmplits-utilities/module.js"
 
 
-export function TmplitLoginDefaultFetch(url, username, password, onSuccess) { 
+export function TmplitLoginDefaultFetch(url, username, password, setLvlCallback) { 
 // this is the object thtat the method is owned by
 
 fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
@@ -17,12 +17,16 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
         if (response.ok) {
             return response.json();
         } else {
+            if(typeof setLvlCallback === "function") {
+                // Callback function with args indicating an error from the http response 
+                setLvlCallback(-1, username); 
+            }
             throw new Error('Something went wrong');
         }
     }).then((data) => {
-        if(typeof onSuccess === "function") { // TODO: test with and without passing in an onSuccess callback function
-            // Callback function for successfull http response
-            onSuccess(data.loginLvl); 
+        if(typeof setLvlCallback === "function") { 
+            // Callback function using successfull http response data
+            setLvlCallback(data.loginLvl, username); 
         }
         console.log(data);
     })
@@ -54,10 +58,20 @@ export function TmplitLoginSubmitForm(e) {
     let localLoginServerIp = scopeLogin.getAttribute('data-server-ip') // localLoginServerIp is the string assigned to the LoginServerIp js var via aliasing with the data-server-ip attribute
     
     // Call the default login function with a callback function   
-    TmplitLoginDefaultFetch("http://"+ localLoginServerIp + ":1238/getLoginLvl", username, password,(level)=>{
-        // Set machine user level from response           
-        localMachine.setUserLevel(level);
+    TmplitLoginDefaultFetch("http://"+ localLoginServerIp + ":1238/getLoginLvl", username, password,(level, username)=>{
+        // Set machine user level from response
+        // If the level is a non error
+        if(level > 0) {
+            // Update the machine level
+            localMachine.setUserLevel(level);
+            // Update the Logged In As Indicator: 
+            let result = "Logged in as: " + username;
+            let loginAs = scopeForm.querySelector('.lui-loginAs');
+            loginAs.textContent = result;
+        }
+        
     }) // Define the callback using a Closure to allow for lexical scoping
+
 };
  
 export function TmplitLoginOpenModal(e) {
@@ -113,6 +127,7 @@ export function TmplitLogin(context, args) {
     return `
         <div class="lui-login-scope" data-machine-name=${dataMachineName} data-server-ip=${loginServerIp} >
         <!-- Modal Trigger-->
+        
         <button class="btn btn-primary lui-loginBtn" onclick="TmplitLoginOpenModal(event)">
             <l  min-user-level-show="1">
                 Change
@@ -123,7 +138,6 @@ export function TmplitLogin(context, args) {
         <button class="btn btn-primary lui-logoutBtn" min-user-level-unlock="1" onclick="TmplitLoginLogoutBtn(event)">
             Log Out
         </button>
-
         
         <!-- Modal -->
            <div class="modal lui-loginModal">                     
@@ -143,17 +157,23 @@ export function TmplitLogin(context, args) {
                     
                     <!-- Modal Body -->
                     <div class="modal-body">
-                        
                         <form role="form" class="lui-loginForm" action=''>
-                        <div class="form-group">
-                            <label for="loginUser">Username</label>
-                            <input type="text" class="form-control lui-loginUser" placeholder="Username"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPass">Password</label>
-                            <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
-                        </div>
-                        <button type="submit" class="btn btn-default" onclick="TmplitLoginSubmitForm(event)">Login</button>
+                            <div class="form-group">
+                                <label for="loginUser">Username</label>
+                                <input type="text" class="form-control lui-loginUser" placeholder="Username"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPass">Password</label>
+                                <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
+                            </div>
+                            
+                            <p class="lui-loginAs" min-user-level-show="1"></p>
+                            <button type="submit" class="btn btn-default" onclick="TmplitLoginSubmitForm(event)">
+                                <l  min-user-level-show="1">
+                                    Change
+                                </l>
+                                Login
+                            </button>
                         </form>
                         
                     </div>
