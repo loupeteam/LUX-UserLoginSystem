@@ -15,6 +15,7 @@ TYPE
 	
 	Task_Status_typ : 	STRUCT 
 		error : BOOL;
+		run : BOOL;
 		state : state_enum;
 	END_STRUCT;
 	
