@@ -168,6 +168,7 @@ void _CYCLIC ProgramCyclic(void)
 				task.internal.response.send = 1;
 
 				task.status.state = ST_IDLE;
+				task.status.run = 0;
 			
 			// no break
 	
