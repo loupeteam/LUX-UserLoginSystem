@@ -1,0 +1,7 @@
+VAR
+	task : Task_typ;
+END_VAR
+VAR CONSTANT
+	MAX_BUFFERED_VALUES : USINT := 5;
+END_VAR
+

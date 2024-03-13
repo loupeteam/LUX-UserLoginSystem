@@ -1,29 +1,25 @@
-To start a new hmi using the widget system
+# Template HMI
+
+## Installation
+
+To install this template, run the following commands in the root directory of the project:
 
 ```
-lpm init
-lpm install widget-template
+lpm install tmplit-template
 ```
 
-If you want to install the local gizmo by file add the directory:
-```
-"@loupeteam/widgets-[mygizmo]": "file:../../src/hmi"
-```
-Run npm install
+Merge the dependencies and scripts into your existing `package.json` file, or replace it with the `package-template.json` file from this template.
+
+To install the dependencies, run the following command in the root directory of the project:
 
 ```
-//Example local file module depencency
-{
-  "name": "hmi",
-  "version": "1.0.0",
-   ...
-  "dependencies": {
-    "@loupeteam/widgets-mygizmo": "file:../../src/hmi"
-  }
-}
+npm install
 ```
 
-If you want to install widgets from a package run lpm install
-```
-lpm install widgets-[mygizmo]
-```
+## Usage
+
+Open the `index.html` file in your browser to view the template.
+## Licensing
+
+This project is licensed under the [MIT License]LICENSE.
+
