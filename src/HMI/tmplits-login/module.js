@@ -8,7 +8,7 @@
 import * as util from "../tmplits-utilities/module.js"
 
 
-export function DefaultLogin(url, username, password, onSuccess) { 
+export function TmplitLoginDefaultFetch(url, username, password, setLvlCallback) { 
 // this is the object thtat the method is owned by
 
 fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
@@ -17,12 +17,16 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
         if (response.ok) {
             return response.json();
         } else {
+            if(typeof setLvlCallback === "function") {
+                // Callback function with args indicating an error from the http response 
+                setLvlCallback(-1, username); 
+            }
             throw new Error('Something went wrong');
         }
     }).then((data) => {
-        if(typeof onSuccess === "function") { // TODO: test with and without passing in an onSuccess callback function
-            // Callback function for successfull http response
-            onSuccess(data.loginLvl); 
+        if(typeof setLvlCallback === "function") { 
+            // Callback function using successfull http response data
+            setLvlCallback(data.loginLvl, username); 
         }
         console.log(data);
     })
@@ -32,7 +36,7 @@ fetch(url+'?' + new URLSearchParams({userName: username, password: password}),{
 }
 
 // Function will get executed on click of submit button 
-export function SubmitForm(e) {
+export function TmplitLoginSubmitForm(e) {
     e.preventDefault();
 
     // Find the scope for this form instance
@@ -54,13 +58,23 @@ export function SubmitForm(e) {
     let localLoginServerIp = scopeLogin.getAttribute('data-server-ip') // localLoginServerIp is the string assigned to the LoginServerIp js var via aliasing with the data-server-ip attribute
     
     // Call the default login function with a callback function   
-    DefaultLogin("http://"+ localLoginServerIp + ":1238/getLoginLvl", username, password,(level)=>{
-        // Set machine user level from response           
-        localMachine.setUserLevel(level);
+    TmplitLoginDefaultFetch("http://"+ localLoginServerIp + ":1238/getLoginLvl", username, password,(level, username)=>{
+        // Set machine user level from response
+        // If the level is a non error
+        if(level > 0) {
+            // Update the machine level
+            localMachine.setUserLevel(level);
+            // Update the Logged In As Indicator: 
+            let result = "Logged in as: " + username;
+            let loginAs = scopeForm.querySelector('.lui-loginAs');
+            loginAs.textContent = result;
+        }
+        
     }) // Define the callback using a Closure to allow for lexical scoping
+
 };
  
-export function OpenModal(e) {
+export function TmplitLoginOpenModal(e) {
     e.preventDefault();
     // Find the scope for this tmplit instance
     let scope = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
@@ -70,7 +84,7 @@ export function OpenModal(e) {
     
 };
 
-export function CloseModal(e) {
+export function TmplitLoginCloseModal(e) {
     e.preventDefault();
     // Find the scope for this tmplit instance
     let scope = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
@@ -79,7 +93,7 @@ export function CloseModal(e) {
     modal.classList.remove("show");
     
 };
-export function Logout(e) {
+export function TmplitLoginLogoutBtn(e) {
     e.preventDefault();
     // Find the scope for the overall tmplit instance
     let scopeLogin = e.target.classList.contains('lui-login-scope') ? e.target : e.target.closest('.lui-login-scope');
@@ -94,8 +108,7 @@ export function TmplitLogin(context, args) {
 
     // Extract the most important args and apply default values if not specified by user
     let { 
-        onLogin = 'DefaultLogin', 
-        userlevelPV,
+        userlevelPV, // TODO: Add support if user has passed in a PV (immediatly setUserPV)
         ['data-machine-name']:dataMachineName = "machine", // dataMachineName can be passed from the user using the alias 'data-machine-name' or assigned the default string here
         ['data-server-ip']:loginServerIp = "127.0.0.1",
         ..._args
@@ -108,17 +121,21 @@ export function TmplitLogin(context, args) {
     } = util.cleanArgs(_args)
  
 
-    // TODO: Add support if user has passed in a PV (immediatly setUserPV)
+    
 
 
-    return ` 
+    return `
         <div class="lui-login-scope" data-machine-name=${dataMachineName} data-server-ip=${loginServerIp} >
         <!-- Modal Trigger-->
-        <button class="btn btn-primary lui-loginBtn" onclick="OpenModal(event)">
+        
+        <button class="btn btn-primary lui-loginBtn" onclick="TmplitLoginOpenModal(event)">
+            <l  min-user-level-show="1">
+                Change
+            </l>
             Login
         </button>
-
-        <button class="btn btn-primary lui-logoutBtn" min-user-level-unlock="1" onclick="Logout(event)">
+        
+        <button class="btn btn-primary lui-logoutBtn" min-user-level-unlock="1" onclick="TmplitLoginLogoutBtn(event)">
             Log Out
         </button>
         
@@ -129,7 +146,7 @@ export function TmplitLogin(context, args) {
                     
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <button type="button" class="close" onclick="CloseModal(event)">
+                        <button type="button" class="close" onclick="TmplitLoginCloseModal(event)">
                             <span>&times;</span>
                             <span class="sr-only">Close</span>
                         </button>
@@ -140,24 +157,30 @@ export function TmplitLogin(context, args) {
                     
                     <!-- Modal Body -->
                     <div class="modal-body">
-                        
                         <form role="form" class="lui-loginForm" action=''>
-                        <div class="form-group">
-                            <label for="loginUser">Username</label>
-                            <input type="text" class="form-control lui-loginUser" placeholder="Username"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPass">Password</label>
-                            <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
-                        </div>
-                        <button type="submit" class="btn btn-default" onclick="SubmitForm(event)">Submit</button>
+                            <div class="form-group">
+                                <label for="loginUser">Username</label>
+                                <input type="text" class="form-control lui-loginUser" placeholder="Username"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPass">Password</label>
+                                <input type="password" class="form-control lui-loginPass" placeholder="Password"/>
+                            </div>
+                            
+                            <p class="lui-loginAs" min-user-level-show="1"></p>
+                            <button type="submit" class="btn btn-default" onclick="TmplitLoginSubmitForm(event)">
+                                <l  min-user-level-show="1">
+                                    Change
+                                </l>
+                                Login
+                            </button>
                         </form>
                         
                     </div>
                     
                     <!-- Modal Footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" onclick="CloseModal(event)"> Close </button>
+                        <button type="button" class="btn btn-default" onclick="TmplitLoginCloseModal(event)"> Close </button>
                     </div>
                 </div>
             </div>

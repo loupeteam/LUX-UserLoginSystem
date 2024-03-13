@@ -1,6 +1,5 @@
 TYPE
 	Task_typ : 	STRUCT 
-		cmd : Task_Command_typ;
 		status : Task_Status_typ;
 		internal : Task_Internal_typ;
 	END_STRUCT;
@@ -8,13 +7,10 @@ END_TYPE
 
 (* ----- Main Task Sturcture ----- *)
 TYPE
-	Task_Command_typ : 	STRUCT 
-		authenticateRequest : BOOL;
-
-	END_STRUCT;
 	
 	Task_Status_typ : 	STRUCT 
 		error : BOOL;
+		run : BOOL;
 		state : state_enum;
 	END_STRUCT;
 	
@@ -93,7 +89,6 @@ TYPE
 		ST_RENDER_RESPONSE, 
 		ST_SEND_RESPONSE,
 		ST_LOGOUT,
-		ST_LOGIN_ERROR,
-		ST_LOGOUT_ERROR
+		ST_ERROR_RESPONSE
 		);
 END_TYPE

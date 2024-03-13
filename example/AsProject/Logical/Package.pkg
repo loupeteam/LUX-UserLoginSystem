@@ -9,6 +9,6 @@
     <Object Type="Package">Diagnostics</Object>
     <Object Type="Package">MachineControl</Object>
     <Object Type="Package">Lux</Object>
-    <Object Type="Program" Language="ANSIC">LoginLvlServer</Object>
+    <Object Type="Program" Language="ANSIC" Reference="true">C:\1-PROJECTS\webHMI-UserLoginSystem\src\LoginLvlServer\ANSIC.prg</Object>
   </Objects>
 </Package>
