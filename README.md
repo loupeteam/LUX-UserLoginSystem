@@ -1,16 +1,16 @@
-# dev-template
-A template folder structure for developing libraries
+# Info
+This tool is provided by Loupe.  
+https://loupe.team  
+info@loupe.team  
+1-800-240-7042
 
-To use this template:
+# Description
 
-- Create a new folder
-- lpm install development-template
+This library is under active development and is released AS IS, with no warranty of any kind, express or implied.
 
-The local package is for the template and does not need to be retained when deployed
+# Installation
 
-This repo is published using github actions when there are new commits on main
+This library is currently only available as source.
 
-This repo can be manually published using:
-```
-lpm publish
-```
+# Licensing
+This project is licensed under the [MIT License](LICENSE).
