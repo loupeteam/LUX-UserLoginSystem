@@ -1,3 +1,11 @@
+(*
+ * File: Types.typ
+ * Copyright (c) 2024 Loupe
+ * https://loupe.team
+ * 
+ * This file is part of LUX-UserLoginSystem, licensed under the MIT License.
+ * 
+ *)
 TYPE
 	Task_typ : 	STRUCT 
 		status : Task_Status_typ;
