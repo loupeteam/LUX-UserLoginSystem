@@ -1,3 +1,11 @@
+/*
+ * File: module.js
+ * Copyright (c) 2024 Loupe
+ * https://loupe.team
+ * 
+ * This file is part of LUX-UserLoginSystem, licensed under the MIT License.
+ * 
+ */
 //
 // TODO: Add descriptive comments here
 //
